@@ -15,7 +15,7 @@ const oidcConfig: OidcClientSettings = {
 
 const render = (): void => {
     ReactDOM.render(
-        <AuthProvider {...oidcConfig}>
+        <AuthProvider {...oidcConfig} onSigninCallback={onSigninCallback}>
             <App />
         </AuthProvider>,
         document.getElementById("root"),
@@ -28,4 +28,8 @@ if (module.hot) {
     module.hot.accept("./components/App", () => {
         render();
     });
+}
+
+async function onSigninCallback(): Promise<void> {
+    window.history.replaceState({}, document.title, window.location.pathname);
 }
