@@ -1,15 +1,9 @@
-import { User } from "oidc-client-ts";
+import {OidcClientSettings, User} from "oidc-client-ts";
 
 export default class OidcService {
     public static getUser() {
-        // const oidcStorage = sessionStorage.getItem(`oidc.user:<your authority>:<your client id>`);
-        const oidcStorage = sessionStorage.getItem(
-            `oidc.user:https://accounts.google.com:977467276012-1pkp49dcqgj8k0f3dprbl53avt8sgcep.apps.googleusercontent.com`,
-        );
-        if (!oidcStorage) {
-            return null;
-        }
-        return User.fromStorageString(oidcStorage);
+        const oidcStorage = sessionStorage.getItem(`oidc.user:${oidcConfig.authority}:${oidcConfig.client_id}`);
+        return oidcStorage ? User.fromStorageString(oidcStorage) : null;
     }
 
     public static getHeaders(): Headers {
@@ -23,7 +17,13 @@ export default class OidcService {
     }
 
     public static getToken(): string {
-        const user = OidcService.getUser();
-        return user?.id_token;
+        return OidcService.getUser()?.id_token;
     }
 }
+// TODO move this inside class
+export const oidcConfig: OidcClientSettings = {
+    authority: "https://accounts.google.com",
+    client_id: "977467276012-1pkp49dcqgj8k0f3dprbl53avt8sgcep.apps.googleusercontent.com",
+    redirect_uri: "http://localhost:8081",
+    client_secret: "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",
+};

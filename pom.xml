@@ -11,5 +11,6 @@
 	<modules>
 		<module>react-frontend</module>
 		<module>spring-boot-backend</module>
+		<module>oidc-server</module>
 	</modules>
 </project>

@@ -4,14 +4,7 @@ import ReactDOM from "react-dom";
 import App from "./components/App";
 import "./main.css";
 import { AuthProvider } from "react-oidc-context";
-import { OidcClientSettings } from "oidc-client-ts";
-
-const oidcConfig: OidcClientSettings = {
-    authority: "https://accounts.google.com",
-    client_id: "977467276012-1pkp49dcqgj8k0f3dprbl53avt8sgcep.apps.googleusercontent.com",
-    redirect_uri: "http://localhost:8081",
-    client_secret: "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",
-};
+import { oidcConfig } from "./api/OidcService";
 
 const render = (): void => {
     ReactDOM.render(
