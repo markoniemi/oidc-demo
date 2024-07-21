@@ -21,7 +21,7 @@ export default class Http {
     private static createRequest(method: string, body: BodyInit): RequestInit {
         return {
             method: method,
-            headers: OidcService.getHeaders(),
+            headers: Jwt.isAuthenticated() ? Jwt.getHeaders() : OidcService.getHeaders(),
             body: body,
         };
     }

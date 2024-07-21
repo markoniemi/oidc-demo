@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,6 +33,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
   protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res,
       FilterChain chain, Authentication auth) throws IOException, ServletException {
     String token = JwtToken.createToken(((User) auth.getPrincipal()).getUsername());
-    res.addHeader(JwtToken.AUTHORIZATION_HEADER, JwtToken.TOKEN_PREFIX + token);
+    res.addHeader(HttpHeaders.AUTHORIZATION, JwtAuthorizationFilter.TOKEN_PREFIX + token);
   }
 }

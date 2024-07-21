@@ -1,25 +1,26 @@
 import React from "react";
-import {AuthContextProps, withAuth} from "react-oidc-context";
+import { AuthContextProps, withAuth } from "react-oidc-context";
 import Empty from "../domain/Empty";
 import UserContainer from "./UsersContainer";
 import EditUser from "./EditUser";
-import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
-import {IntlProvider} from "react-intl";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { IntlProvider } from "react-intl";
 import i18nConfig from "../messages/messages";
 import LoginForm from "./LoginForm";
+import Jwt from "../api/Jwt";
 
 class Content extends React.Component<Empty, Empty> {
     public override render(): React.ReactNode {
         const auth: AuthContextProps = this.props.auth;
-        if (auth.isAuthenticated) {
+        if (auth.isAuthenticated || Jwt.isAuthenticated()) {
             return (
                 <IntlProvider locale={i18nConfig.locale} messages={i18nConfig.messages}>
                     <BrowserRouter>
                         <Routes>
-                            <Route path="/" element={<Navigate to="/users"/>}/>
-                            <Route path="/users" element={<UserContainer/>}/>
-                            <Route path="/users/new" element={<EditUser/>}/>
-                            <Route path="/users/:id" element={<EditUser/>}/>
+                            <Route path="/" element={<Navigate to="/users" />} />
+                            <Route path="/users" element={<UserContainer />} />
+                            <Route path="/users/new" element={<EditUser />} />
+                            <Route path="/users/:id" element={<EditUser />} />
                         </Routes>
                     </BrowserRouter>
                 </IntlProvider>
@@ -35,13 +36,12 @@ class Content extends React.Component<Empty, Empty> {
             <IntlProvider locale={i18nConfig.locale} messages={i18nConfig.messages}>
                 <BrowserRouter>
                     <Routes>
-                        <Route path="*" element={<Navigate to="/login"/>}/>
-                        <Route path="/login" element={<LoginForm auth={auth}/>}/>
+                        <Route path="*" element={<Navigate to="/login" />} />
+                        <Route path="/login" element={<LoginForm />} />
                     </Routes>
                 </BrowserRouter>
             </IntlProvider>
         );
-        // return <button onClick={() => void auth.signinRedirect()}>Log in</button>;
     }
 }
 

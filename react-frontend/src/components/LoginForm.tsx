@@ -1,17 +1,16 @@
 import * as React from "react";
-import {Button, Card, Col, Form, Row} from "react-bootstrap";
-import {FormattedMessage} from "react-intl";
+import { Button, Card, Col, Form, Row } from "react-bootstrap";
+import { FormattedMessage } from "react-intl";
 import Messages from "./Messages";
 import LoginService from "../api/LoginService";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as Icons from "@fortawesome/free-solid-svg-icons";
 import Jwt from "../api/Jwt";
-import Message, {MessageType} from "../domain/Message";
-import {Form as FormikForm, Formik, FormikProps} from "formik";
+import Message, { MessageType } from "../domain/Message";
+import { Form as FormikForm, Formik, FormikProps } from "formik";
 import * as Yup from "yup";
 import InputField from "./InputField";
-import {WithRouter} from "./withRouter";
-import {AuthContextProps, withAuth} from "react-oidc-context";
+import { AuthContextProps, withAuth } from "react-oidc-context";
 
 export interface ILoginForm {
     username: string;
@@ -22,35 +21,34 @@ export interface ILoginState extends ILoginForm {
     messages?: ReadonlyArray<Message>;
 }
 
-// export interface LoginFormProps extends WithRouter {
-export interface LoginFormProps {
-    auth: AuthContextProps;
+export interface WithAuthProps {
+    auth?: AuthContextProps;
 }
 
-class LoginForm extends React.Component<LoginFormProps, ILoginState> {
+class LoginForm extends React.Component<WithAuthProps, ILoginState> {
     private schema = Yup.object().shape({
         username: Yup.string().required("username.required"),
         password: Yup.string().required("password.required"),
     });
 
-    constructor(props: LoginFormProps) {
+    constructor(props: WithAuthProps) {
         super(props);
         this.onSubmit = this.onSubmit.bind(this);
         this.login = this.login.bind(this);
         this.renderForm = this.renderForm.bind(this);
-        this.state = {username: "", password: ""};
+        this.state = { username: "", password: "" };
     }
 
     public render(): JSX.Element {
         return (
             <Card id="LoginForm">
                 <Row>
-                    <Col md={{span: 10, offset: 4}}>
+                    <Col md={{ span: 10, offset: 4 }}>
                         <Card.Body>
                             <Card.Title>
-                                <FormattedMessage id="login"/>
+                                <FormattedMessage id="login" />
                             </Card.Title>
-                            <Messages messages={this.state.messages}/>
+                            <Messages messages={this.state.messages} />
                             <Formik
                                 initialValues={this.state}
                                 onSubmit={this.onSubmit}
@@ -63,11 +61,16 @@ class LoginForm extends React.Component<LoginFormProps, ILoginState> {
                     </Col>
                 </Row>
                 <Row>
-                    <Col md={{span: 10, offset: 4}}>
+                    <Col md={{ span: 10, offset: 4 }}>
                         <Card.Body>
-                            <Button id="login" size="sm" className="pull-right"
-                                    onClick={() => void this.props.auth.signinRedirect()}>
-                                <FontAwesomeIcon icon={Icons.faCheckSquare}/>
+                            <Button
+                                id="login.google"
+                                size="sm"
+                                className="pull-right"
+                                onClick={() => void this.props.auth.signinRedirect()}
+                            >
+                                <FontAwesomeIcon icon={Icons.faRightToBracket} />
+                                <FormattedMessage id="login.google"/>
                             </Button>
                         </Card.Body>
                     </Col>
@@ -80,11 +83,11 @@ class LoginForm extends React.Component<LoginFormProps, ILoginState> {
         return (
             <FormikForm>
                 <Form.Group>
-                    <InputField name="username" formik={form}/>
-                    <InputField name="password" type="password" formik={form}/>
+                    <InputField name="username" formik={form} />
+                    <InputField name="password" type="password" formik={form} />
                     <Col sm={5}>
                         <Button id="login" size="sm" className="pull-right" type="submit">
-                            <FontAwesomeIcon icon={Icons.faCheckSquare}/>
+                            <FontAwesomeIcon icon={Icons.faCheckSquare} />
                         </Button>
                     </Col>
                 </Form.Group>
@@ -93,18 +96,19 @@ class LoginForm extends React.Component<LoginFormProps, ILoginState> {
     }
 
     public async onSubmit(values: ILoginForm) {
-        this.setState({...values});
+        this.setState({ ...values });
         await this.login();
     }
 
     private async login(): Promise<void> {
-        const loginForm: ILoginForm = {...this.state};
+        const loginForm: ILoginForm = { ...this.state };
         try {
             const token = await LoginService.login(loginForm);
             Jwt.setToken(token);
+            window.location.href = "/users"
             // this.props.router.navigate("/users");
         } catch (error) {
-            this.setState({messages: [{text: error.message, type: MessageType.ERROR}]});
+            this.setState({ messages: [{ text: error.message, type: MessageType.ERROR }] });
         }
     }
 }

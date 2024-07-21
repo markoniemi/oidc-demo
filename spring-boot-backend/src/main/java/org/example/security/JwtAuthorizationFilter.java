@@ -9,15 +9,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
-
+  public static final String TOKEN_PREFIX = "Bearer ";
   public JwtAuthorizationFilter(AuthenticationManager authManager) {
     super(authManager);
   }
@@ -32,13 +34,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     chain.doFilter(request, response);
   }
 
-  private String getToken(HttpServletRequest request) {
-    String header = request.getHeader(JwtToken.AUTHORIZATION_HEADER);
-    if (!JwtToken.hasToken(header)) {
+  public static String getToken(HttpServletRequest request) {
+    String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+    if (!hasToken(header)) {
       log.debug("No token in Authorization header.");
       return null;
     }
-    return header.replace(JwtToken.TOKEN_PREFIX, "");
+    return header.replace(TOKEN_PREFIX, "");
   }
 
   private UsernamePasswordAuthenticationToken getAuthentication(String token) {
@@ -50,5 +52,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
       return null;
     }
     return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+  }
+  public static boolean hasToken(String header) {
+    return StringUtils.startsWith(header, TOKEN_PREFIX);
   }
 }

@@ -5,6 +5,7 @@ const i18nConfig = {
         users: "Users",
         id: "Id",
         login: "Login",
+        "login.google": "Login with Google",
         username: "Username",
         email: "Email",
         password: "Password",

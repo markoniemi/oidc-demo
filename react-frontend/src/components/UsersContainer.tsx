@@ -12,6 +12,7 @@ import * as Icons from "@fortawesome/free-solid-svg-icons";
 import Time from "./Time";
 import withRouter, { WithRouter } from "./withRouter";
 import { AuthContextProps, withAuth } from "react-oidc-context";
+import LoginService from "../api/LoginService";
 
 export interface UsersContainerState {
     users: User[];
@@ -108,7 +109,7 @@ class UsersContainer extends React.Component<UsersContainerProps, UsersContainer
     }
 
     private async logout() {
-        // await LoginService.logout();
+        await LoginService.logout();
         this.props.auth.removeUser();
         this.props.router.navigate("/");
     }
