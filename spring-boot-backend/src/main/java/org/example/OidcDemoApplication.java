@@ -1,12 +1,14 @@
 package org.example;
 
-import org.example.config.ApplicationConfig;
-import org.springframework.boot.SpringApplication;
+import org.example.config.ContextInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 
 @SpringBootApplication
 public class OidcDemoApplication {
   public static void main(String[] args) {
-    SpringApplication.run(ApplicationConfig.class, args);
+    new SpringApplicationBuilder(OidcDemoApplication.class)
+            .initializers(new ContextInitializer())
+            .run(args);
   }
 }
