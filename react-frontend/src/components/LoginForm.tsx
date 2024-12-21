@@ -11,6 +11,7 @@ import { Form as FormikForm, Formik, FormikProps } from "formik";
 import * as Yup from "yup";
 import InputField from "./InputField";
 import { AuthContextProps, withAuth } from "react-oidc-context";
+import withRouter from "./withRouter";
 
 export interface ILoginForm {
     username: string;
@@ -70,7 +71,7 @@ class LoginForm extends React.Component<WithAuthProps, ILoginState> {
                                 onClick={() => void this.props.auth.signinRedirect()}
                             >
                                 <FontAwesomeIcon icon={Icons.faRightToBracket} />
-                                <FormattedMessage id="login.google"/>
+                                <FormattedMessage id="login.google" />
                             </Button>
                         </Card.Body>
                     </Col>
@@ -105,7 +106,7 @@ class LoginForm extends React.Component<WithAuthProps, ILoginState> {
         try {
             const token = await LoginService.login(loginForm);
             Jwt.setToken(token);
-            window.location.href = "/users"
+            window.location.href = "/users";
             // this.props.router.navigate("/users");
         } catch (error) {
             this.setState({ messages: [{ text: error.message, type: MessageType.ERROR }] });
@@ -113,4 +114,4 @@ class LoginForm extends React.Component<WithAuthProps, ILoginState> {
     }
 }
 
-export default withAuth(LoginForm);
+export default withAuth(withRouter(LoginForm));

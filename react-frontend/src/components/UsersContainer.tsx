@@ -18,7 +18,8 @@ export interface UsersContainerState {
     users: User[];
     messages?: ReadonlyArray<Message>;
 }
-export interface UsersContainerProps extends  WithRouter{
+
+export interface UsersContainerProps extends WithRouter {
     auth: AuthContextProps;
 }
 
