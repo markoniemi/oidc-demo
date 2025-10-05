@@ -11,8 +11,8 @@
   <properties>
     <java.version>17</java.version>
     <org.apache.cxf.version>4.0.3</org.apache.cxf.version>
-    <spring-cloud.version>2023.0.3</spring-cloud.version>
-    <spring.boot.version>3.2.2</spring.boot.version>
+    <spring-cloud.version>2024.0.1</spring-cloud.version>
+    <spring.boot.version>3.4.6</spring.boot.version>
     <docker.image.prefix>markoniemi</docker.image.prefix>
     <webdrivermanager.version>5.8.0</webdrivermanager.version>
     <java-jwt.version>4.4.0</java-jwt.version>
@@ -85,9 +85,9 @@
 <scope>test</scope>
 </dependency>    
 <dependency>
-<groupId>net.sourceforge.htmlunit</groupId>
-<artifactId>htmlunit</artifactId>
-<scope>test</scope>
+    <groupId>org.htmlunit</groupId>
+    <artifactId>htmlunit</artifactId>
+    <scope>test</scope>
 </dependency>    
   </dependencies>
   <build>

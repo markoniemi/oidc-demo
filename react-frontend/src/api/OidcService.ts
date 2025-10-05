@@ -22,8 +22,8 @@ export default class OidcService {
 }
 // TODO move this inside class
 export const oidcConfig: OidcClientSettings = {
-    authority: "https://accounts.google.com",
-    client_id: "977467276012-1pkp49dcqgj8k0f3dprbl53avt8sgcep.apps.googleusercontent.com",
+    authority: "http://localhost:9090/realms/oidc-demo",
+    client_id: "oidc-demo",
     redirect_uri: "http://localhost:8081",
-    client_secret: "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",
+    client_secret: "GJ0nlBrzNvRSbDU7Ij71hQ5xJgd7449x",
 };
