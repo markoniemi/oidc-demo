@@ -38,14 +38,17 @@ public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
   @NonNull
   @NotBlank(message = "field.required")
   private String username;
+
   @NonNull
   @NotBlank(message = "field.required")
   private String password;
-  @NonNull
-  private String email;
+
+  @NonNull private String email;
+
   @NonNull
   @Enumerated(EnumType.STRING)
   private Role role;

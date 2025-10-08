@@ -32,9 +32,8 @@ public interface UserService {
 
   /**
    * Creates a user to repository.
-   * 
+   *
    * @throws BindException
-   * 
    * @throws NullPointerException if the username is null
    * @throws IllegalArgumentException if the username is blank
    * @throws IllegalArgumentException if username already exists
@@ -44,7 +43,7 @@ public interface UserService {
 
   /**
    * Updates a user in repository.
-   * 
+   *
    * @throws NullPointerException if the user does not exist
    */
   @PUT
@@ -76,9 +75,7 @@ public interface UserService {
   @Path("/exists/{id}")
   boolean exists(@PathParam("id") @WebParam(name = "id") Long id);
 
-  /**
-   * Deletes a user by username.
-   */
+  /** Deletes a user by username. */
   @DELETE
   @Path("/{id}")
   void delete(@PathParam("id") @WebParam(name = "id") Long id);

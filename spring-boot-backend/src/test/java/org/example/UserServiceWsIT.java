@@ -66,7 +66,8 @@ public class UserServiceWsIT extends AbstractIntegrationTestBase {
     if (jwtHeader != null) {
       requestHeaders.put("Authorization", Arrays.asList(jwtHeader));
     }
-    ((BindingProvider) service).getRequestContext().put(MessageContext.HTTP_REQUEST_HEADERS,
-        requestHeaders);
+    ((BindingProvider) service)
+        .getRequestContext()
+        .put(MessageContext.HTTP_REQUEST_HEADERS, requestHeaders);
   }
 }

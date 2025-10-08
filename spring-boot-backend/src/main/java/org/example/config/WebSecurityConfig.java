@@ -31,19 +31,20 @@ import jakarta.annotation.Resource;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class WebSecurityConfig {
-  @Resource
-  UserRepositoryAuthenticationProvider userRepositoryAuthenticationProvider;
-  @Resource
-  UserDetailsService userDetailsService;
+  @Resource UserRepositoryAuthenticationProvider userRepositoryAuthenticationProvider;
+  @Resource UserDetailsService userDetailsService;
   AuthenticationManager authenticationManager;
-  String[] ignoredPaths =
-      {"/*", "/login", "/api/rest/auth/login/**", "/h2-console/**", "/users/**"};
+  String[] ignoredPaths = {
+    "/*", "/login", "/api/rest/auth/login/**", "/h2-console/**", "/users/**"
+  };
 
   @Bean
-  public AuthenticationManager authenticationManager(HttpSecurity http,
-      UserDetailsService userDetailsService) throws Exception {
+  public AuthenticationManager authenticationManager(
+      HttpSecurity http, UserDetailsService userDetailsService) throws Exception {
     AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
-    builder.userDetailsService(userDetailsService).passwordEncoder(NoOpPasswordEncoder.getInstance());
+    builder
+        .userDetailsService(userDetailsService)
+        .passwordEncoder(NoOpPasswordEncoder.getInstance());
     authenticationManager = builder.build();
     return authenticationManager;
   }
@@ -52,29 +53,38 @@ public class WebSecurityConfig {
   @Bean
   @Order(1)
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.securityMatcher((HttpServletRequest request)->{return JwtToken.verifyToken(JwtAuthorizationFilter.getToken(request))!=null?true:false;});
+    http.securityMatcher(
+        (HttpServletRequest request) -> {
+          return JwtToken.verifyToken(JwtAuthorizationFilter.getToken(request)) != null
+              ? true
+              : false;
+        });
     http.csrf(AbstractHttpConfigurer::disable);
-    http.authorizeHttpRequests((auth)->auth.requestMatchers(RegexRequestMatcher.regexMatcher(".*\\?wsdl")).permitAll());
-    http.authorizeHttpRequests((auth)->auth.requestMatchers(ignoredPaths).permitAll());
-    http.authorizeHttpRequests((auth)->auth.anyRequest().authenticated());
+    http.authorizeHttpRequests(
+        (auth) -> auth.requestMatchers(RegexRequestMatcher.regexMatcher(".*\\?wsdl")).permitAll());
+    http.authorizeHttpRequests((auth) -> auth.requestMatchers(ignoredPaths).permitAll());
+    http.authorizeHttpRequests((auth) -> auth.anyRequest().authenticated());
     http.addFilter(new JwtAuthenticationFilter(authenticationManager));
     http.addFilter(new JwtAuthorizationFilter(authenticationManager));
-    http.sessionManagement((auth)->auth.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+    http.sessionManagement((auth) -> auth.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
     return http.build();
   }
+
   @Bean
   @Order(2)
   public SecurityFilterChain oidcFilterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable);
-    http.authorizeHttpRequests((auth)->auth.requestMatchers(RegexRequestMatcher.regexMatcher(".*\\?wsdl")).permitAll());
-    http.authorizeHttpRequests((auth)->auth.requestMatchers(ignoredPaths).permitAll());
-    http.authorizeHttpRequests((auth)->auth.anyRequest().authenticated());
-    http.sessionManagement((auth)->auth.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+    http.authorizeHttpRequests(
+        (auth) -> auth.requestMatchers(RegexRequestMatcher.regexMatcher(".*\\?wsdl")).permitAll());
+    http.authorizeHttpRequests((auth) -> auth.requestMatchers(ignoredPaths).permitAll());
+    http.authorizeHttpRequests((auth) -> auth.anyRequest().authenticated());
+    http.sessionManagement((auth) -> auth.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
     http.oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
     return http.build();
   }
+
   @Bean
   public JwtDecoder jwtDecoder(OAuth2ResourceServerProperties properties) {
-      return JwtDecoders.fromIssuerLocation(properties.getJwt().getIssuerUri());
-  }  
+    return JwtDecoders.fromIssuerLocation(properties.getJwt().getIssuerUri());
+  }
 }

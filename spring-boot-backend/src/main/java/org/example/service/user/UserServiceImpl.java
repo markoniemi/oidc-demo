@@ -27,14 +27,10 @@ import lombok.extern.log4j.Log4j2;
 @Component(value = "userService")
 @WebService(endpointInterface = "org.example.service.user.UserService", serviceName = "UserService")
 public class UserServiceImpl implements UserService {
-  @Resource
-  private UserRepository userRepository;
-  @Resource
-  WebServiceContext context;
-  @Resource
-  UserValidator userValidator;
-  @Resource
-  Validator validator;
+  @Resource private UserRepository userRepository;
+  @Resource WebServiceContext context;
+  @Resource UserValidator userValidator;
+  @Resource Validator validator;
 
   @Override
   @Transactional
@@ -123,9 +119,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional
-  /**
-   * If the entity is not found in the persistence store it is silently ignored.
-   */
+  /** If the entity is not found in the persistence store it is silently ignored. */
   public void delete(Long id) {
     log.trace("delete: {}", id);
     userRepository.deleteById(id);

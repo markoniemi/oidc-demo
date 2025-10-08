@@ -10,10 +10,8 @@ import jakarta.xml.ws.Endpoint;
 
 @Configuration
 public class WebServiceConfig {
-  @Resource
-  private UserService userService;
-  @Resource
-  private Bus bus;
+  @Resource private UserService userService;
+  @Resource private Bus bus;
 
   @Bean
   public Endpoint endpoint() {

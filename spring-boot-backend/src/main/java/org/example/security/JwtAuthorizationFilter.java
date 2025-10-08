@@ -20,13 +20,15 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
   public static final String TOKEN_PREFIX = "Bearer ";
+
   public JwtAuthorizationFilter(AuthenticationManager authManager) {
     super(authManager);
   }
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-      FilterChain chain) throws IOException, ServletException {
+  protected void doFilterInternal(
+      HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+      throws IOException, ServletException {
     UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(getToken(request));
     if (authenticationToken != null) {
       SecurityContextHolder.getContext().setAuthentication(authenticationToken);
@@ -53,6 +55,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
     return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
   }
+
   public static boolean hasToken(String header) {
     return StringUtils.startsWith(header, TOKEN_PREFIX);
   }

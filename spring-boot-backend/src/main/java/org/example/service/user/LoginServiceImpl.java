@@ -21,9 +21,7 @@ import lombok.extern.log4j.Log4j2;
 @Component(value = "loginService")
 @Path("/auth")
 public class LoginServiceImpl implements LoginService {
-  @Resource
-  @Getter
-  @Setter
+  @Resource @Getter @Setter
   // private UserService userService = new UserServiceImpl();
   private UserService userService;
 

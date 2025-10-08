@@ -15,28 +15,27 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import jakarta.annotation.Resource;
 
 public class UserServiceFeignIT extends AbstractIntegrationTestBase {
-    @Resource
-    private UserService userService;
+  @Resource private UserService userService;
 
-    @Test
-    public void findAll() throws JsonParseException, JsonMappingException, IOException {
-        List<User> users = userService.findAll();
-        assertNotNull(users);
-        assertEquals(6, users.size());
-    }
+  @Test
+  public void findAll() throws JsonParseException, JsonMappingException, IOException {
+    List<User> users = userService.findAll();
+    assertNotNull(users);
+    assertEquals(6, users.size());
+  }
 
-    @Test
-    public void create() throws BindException {
-        User user = new User("username", "password", "email", Role.ROLE_USER);
-        userService.create(user);
-        User savedUser = userService.findByUsername("username");
-        assertEquals("username", savedUser.getUsername());
-        assertEquals("email", savedUser.getEmail());
-//        assertTrue(userService.exists(savedUser.getId()));
-        savedUser = userService.findById(savedUser.getId());
-        assertEquals("username", user.getUsername());
-        userService.delete(savedUser.getId());
-        savedUser = userService.findByUsername("username");
-        assertNull(savedUser);
-    }
+  @Test
+  public void create() throws BindException {
+    User user = new User("username", "password", "email", Role.ROLE_USER);
+    userService.create(user);
+    User savedUser = userService.findByUsername("username");
+    assertEquals("username", savedUser.getUsername());
+    assertEquals("email", savedUser.getEmail());
+    //        assertTrue(userService.exists(savedUser.getId()));
+    savedUser = userService.findById(savedUser.getId());
+    assertEquals("username", user.getUsername());
+    userService.delete(savedUser.getId());
+    savedUser = userService.findByUsername("username");
+    assertNull(savedUser);
+  }
 }

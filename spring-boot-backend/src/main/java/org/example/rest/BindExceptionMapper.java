@@ -20,10 +20,14 @@ public class BindExceptionMapper implements ExceptionMapper<BindException> {
 
   @Override
   public Response toResponse(BindException errors) {
-    List<ValidationError> validationErrors = errors.getAllErrors().stream()
-        .map(this::createValidationError).collect(Collectors.toList());
-    return Response.status(Response.Status.BAD_REQUEST).entity(asJson(validationErrors))
-        .type(MediaType.APPLICATION_JSON).build();
+    List<ValidationError> validationErrors =
+        errors.getAllErrors().stream()
+            .map(this::createValidationError)
+            .collect(Collectors.toList());
+    return Response.status(Response.Status.BAD_REQUEST)
+        .entity(asJson(validationErrors))
+        .type(MediaType.APPLICATION_JSON)
+        .build();
   }
 
   private String asJson(List<ValidationError> validationErrors) {
@@ -36,8 +40,13 @@ public class BindExceptionMapper implements ExceptionMapper<BindException> {
   }
 
   private ValidationError createValidationError(ObjectError error) {
-    ValidationError validationError = new ValidationError(error.getObjectName(), null,
-        error.getCode(), error.getDefaultMessage(), error.getArguments());
+    ValidationError validationError =
+        new ValidationError(
+            error.getObjectName(),
+            null,
+            error.getCode(),
+            error.getDefaultMessage(),
+            error.getArguments());
     if (error instanceof FieldError) {
       validationError.setField(((FieldError) error).getField());
     }

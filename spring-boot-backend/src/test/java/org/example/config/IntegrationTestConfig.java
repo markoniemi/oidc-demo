@@ -8,16 +8,16 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import feign.RequestInterceptor;
 
 @Configuration
-@Import({ SeleniumConfig.class })
+@Import({SeleniumConfig.class})
 public class IntegrationTestConfig {
 
-    @Bean
-    public RequestInterceptor jwtRequestInterceptor() {
-        return new JwtRequestInterceptor();
-    }
+  @Bean
+  public RequestInterceptor jwtRequestInterceptor() {
+    return new JwtRequestInterceptor();
+  }
 
-    @Bean
-    public ClientHttpRequestInterceptor restRequestInterceptor() {
-        return new RestRequestInterceptor();
-    }
+  @Bean
+  public ClientHttpRequestInterceptor restRequestInterceptor() {
+    return new RestRequestInterceptor();
+  }
 }

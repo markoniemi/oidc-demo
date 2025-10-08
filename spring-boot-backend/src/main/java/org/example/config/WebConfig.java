@@ -8,8 +8,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
-    registry.addResourceHandler("/**").addResourceLocations(
-        "classpath:/META-INF/resources/webjars/react-frontend/0.0.1-SNAPSHOT/");
+    registry
+        .addResourceHandler("/**")
+        .addResourceLocations(
+            "classpath:/META-INF/resources/webjars/react-frontend/0.0.1-SNAPSHOT/");
   }
 
   // @Override

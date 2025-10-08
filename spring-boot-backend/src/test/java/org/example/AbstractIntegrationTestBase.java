@@ -8,12 +8,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-/**
- * Base class for integration tests, enables running multiple tests
- * with @SpringBootTest
- */
+/** Base class for integration tests, enables running multiple tests with @SpringBootTest */
 @SpringBootTest(classes = OidcDemoApplication.class, webEnvironment = WebEnvironment.DEFINED_PORT)
 @ExtendWith(SpringExtension.class)
 @ContextHierarchy(@ContextConfiguration(classes = IntegrationTestConfig.class))
-public abstract class AbstractIntegrationTestBase {
-}
+public abstract class AbstractIntegrationTestBase {}

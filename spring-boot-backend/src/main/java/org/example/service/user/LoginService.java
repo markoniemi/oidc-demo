@@ -9,5 +9,4 @@ public interface LoginService {
   String login(User userToLogin) throws AuthenticationException;
 
   void logout(HttpServletRequest request);
-
 }

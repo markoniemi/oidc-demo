@@ -22,10 +22,14 @@ public class ConstraintViolationExceptionMapper
   ObjectMapper objectMapper = new ObjectMapper();
 
   public Response toResponse(ConstraintViolationException exception) {
-    List<ValidationError> validationErrors = exception.getConstraintViolations().stream()
-        .map(this::createValidationError).collect(Collectors.toList());
-    return Response.status(Response.Status.BAD_REQUEST).entity(asJson(validationErrors))
-        .type(MediaType.APPLICATION_JSON).build();
+    List<ValidationError> validationErrors =
+        exception.getConstraintViolations().stream()
+            .map(this::createValidationError)
+            .collect(Collectors.toList());
+    return Response.status(Response.Status.BAD_REQUEST)
+        .entity(asJson(validationErrors))
+        .type(MediaType.APPLICATION_JSON)
+        .build();
   }
 
   private String asJson(List<ValidationError> validationErrors) {

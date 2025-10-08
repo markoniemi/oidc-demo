@@ -12,9 +12,11 @@ public class UserSearchForm {
   @QueryParam("role")
   @FormParam("role")
   private Role role;
+
   @QueryParam("email")
   @FormParam("email")
   private String email;
+
   @QueryParam("username")
   @FormParam("username")
   private String username;
