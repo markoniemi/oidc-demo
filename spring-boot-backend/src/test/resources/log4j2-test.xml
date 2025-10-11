@@ -9,7 +9,7 @@
         <Root level="INFO">
             <AppenderRef ref="Console" />
         </Root>
-    <Logger name="org.apache.cxf.jaxb.JAXBContextInitializer" level="WARN"/>
+		<Logger name="org.apache.cxf.jaxb.JAXBContextInitializer" level="WARN"/>
 		<Logger name="org.example" level="DEBUG"/>
 		<Logger name="org.springframework" level="WARN"/>
 		<Logger name="org.springframework.web.servlet.mvc" level="WARN"/>
@@ -19,6 +19,6 @@
 		<Logger name="org.hibernate" level="ERROR" />
 		<Logger name="org.apache.logging" level="ERROR" />
 		<Logger name="org.apache.tomcat.util.scan" level="ERROR" />
-		<Logger name="com.github.springtestdbunit" level="DEBUG" />
+    <Logger name="com.github.springtestdbunit" level="DEBUG" />
     </Loggers>
 </Configuration>

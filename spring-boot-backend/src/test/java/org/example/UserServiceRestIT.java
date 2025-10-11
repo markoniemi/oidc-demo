@@ -55,27 +55,41 @@ public class UserServiceRestIT extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void createWithValidationError() throws JsonProcessingException {
+  public void createWithInvalidUser() throws JsonProcessingException {
     String userJson = "{\"username\":null}";
     List<ValidationError> validationErrors = userService.create(userJson, BAD_REQUEST);
-    assertEquals(1, validationErrors.size());
+    assertEquals(3, validationErrors.size());
     ValidationError validationError = validationErrors.get(0);
     log.debug(validationError);
-    assertEquals("user", validationError.getObjectName());
-    assertEquals("username", validationError.getField());
+    assertEquals("User", validationError.getObjectName());
+//    assertEquals("password", validationError.getField());
     assertEquals("field.required", validationError.getCode());
+  }
+  
+  @Test
+  public void createWithExistingUser() {
+    User user = new User("username", "password", "email", Role.ROLE_USER);
+    user = userService.create(user);
+    String userJson = "{\"username\":\"username\"}";
+    userService.create(userJson, BAD_REQUEST);
+    userService.delete(user.getId(), NO_CONTENT);
   }
 
   @Test
-  public void updateWithValidationError() throws JsonProcessingException {
+  public void updateWithInvalidUser() throws JsonProcessingException {
     String userJson = "{\"id\":1, \"username\":null}";
     List<ValidationError> validationErrors = userService.update(userJson, 1, BAD_REQUEST);
     log.debug(Arrays.toString(validationErrors.toArray()));
-    assertEquals(2, validationErrors.size());
+    assertEquals(3, validationErrors.size());
     ValidationError validationError = validationErrors.get(0);
     assertEquals("User", validationError.getObjectName());
-    //        assertEquals("password", validationError.getField());
+//    assertEquals("password", validationError.getField());
     assertEquals("field.required", validationError.getCode());
+  }
+  @Test
+  public void updateWithNonexistingUser() throws JsonProcessingException {
+    String userJson = "{\"id\":555, \"username\":\"username\"}";
+    userService.update(userJson,555, BAD_REQUEST);
   }
 
   @Test

@@ -1,5 +1,7 @@
 package org.example.model.user;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -30,10 +32,9 @@ import lombok.ToString;
 @ToString(exclude = "password")
 @EqualsAndHashCode(of = "username")
 @Entity
-@Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "username"))
+@Table(name = "app_users", uniqueConstraints = @UniqueConstraint(columnNames = "username"))
 @XmlRootElement(name = "User")
 @XmlAccessorType(XmlAccessType.FIELD)
-@SuppressWarnings("PMD.UnusedPrivateField")
 public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,9 +48,12 @@ public class User {
   @NotBlank(message = "field.required")
   private String password;
 
-  @NonNull private String email;
+  @NonNull 
+  @NotBlank(message = "field.required")
+  private String email;
 
   @NonNull
   @Enumerated(EnumType.STRING)
+  @JdbcTypeCode(SqlTypes.VARCHAR)
   private Role role;
 }

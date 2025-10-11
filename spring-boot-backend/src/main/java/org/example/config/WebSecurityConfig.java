@@ -1,5 +1,6 @@
 package org.example.config;
 
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.security.JwtAuthenticationFilter;
 import org.example.security.JwtAuthorizationFilter;
@@ -23,9 +24,7 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
-import jakarta.annotation.Resource;
 
 @Configuration
 @EnableWebSecurity
@@ -35,7 +34,7 @@ public class WebSecurityConfig {
   @Resource UserDetailsService userDetailsService;
   AuthenticationManager authenticationManager;
   String[] ignoredPaths = {
-    "/*", "/login", "/api/rest/auth/login/**", "/h2-console/**", "/users/**"
+    "/*", "/login", "/api/rest/auth/login/**", "/h2-console/**", "/users/**", "/assets/**"
   };
 
   @Bean
@@ -55,7 +54,7 @@ public class WebSecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.securityMatcher(
         (HttpServletRequest request) -> {
-          return JwtToken.verifyToken(JwtAuthorizationFilter.getToken(request)) != null
+          return JwtToken.getSubject(JwtAuthorizationFilter.getToken(request)) != null
               ? true
               : false;
         });

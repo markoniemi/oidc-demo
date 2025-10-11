@@ -31,7 +31,7 @@ public class UserServiceWsIT extends AbstractIntegrationTestBase {
   @BeforeEach
   public void setUp() throws MalformedURLException {
     userService = getUserService();
-    setAuthorizationHeader(userService, "Bearer " + JwtToken.createToken("admin1"));
+    setAuthorizationHeader(userService, "Bearer " + JwtToken.create("admin1"));
   }
 
   @Test
