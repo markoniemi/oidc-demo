@@ -1,17 +1,14 @@
-import "bootstrap/dist/css/bootstrap.css";
+// @ts-ignore
+import * as bootstrap from "bootstrap/dist/css/bootstrap.css";
+// @ts-ignore
+import * as main from "./main.css";
 import React from "react";
-import ReactDOM from "react-dom";
 import App from "./components/App";
-import "./main.css";
+import {createRoot} from "react-dom/client";
 
-const render = (): void => {
-    ReactDOM.render(<App />, document.getElementById("root"));
-};
-
-render();
-
-if (module.hot) {
-    module.hot.accept("./components/App", () => {
-        render();
-    });
-}
+const root = createRoot(document.getElementById("root") as HTMLElement);
+root.render(
+    <React.StrictMode>
+        <App/>
+    </React.StrictMode>
+);

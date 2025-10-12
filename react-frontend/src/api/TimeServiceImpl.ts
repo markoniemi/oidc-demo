@@ -1,4 +1,4 @@
-import { TimeService } from "./TimeService";
+import {type TimeService} from "./TimeService";
 import Http from "./Http";
 
 export default class TimeServiceImpl implements TimeService {

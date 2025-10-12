@@ -5,7 +5,7 @@ export default interface UserService {
 
     fetchUsers(): Promise<User[]>;
 
-    create(newUser: User): Promise<User>;
+    create(newUser: User | null): Promise<User>;
 
     update(editedUser: User): Promise<User>;
 

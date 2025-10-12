@@ -24,6 +24,15 @@ public class JwtToken {
         .sign(HMAC512(secret.getBytes()));
   }
 
+  public static boolean isOAuthToken(String token) {
+    try {
+      verify(token);
+    } catch (JWTVerificationException e) {
+      return false;
+    }
+    return true;
+  }
+
   public static String getSubject(String token) {
     return JWT.decode(token).getSubject();
   }

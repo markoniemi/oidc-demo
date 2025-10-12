@@ -1,20 +1,19 @@
-import { assert } from "chai";
 import * as dotenv from "dotenv";
-import * as React from "react";
 import UserRow from "../../src/components/UserRow";
 import User from "../../src/domain/User";
-import { user1 } from "../users";
-import { BrowserRouter } from "react-router-dom";
-import { act, configure, fireEvent, render, screen } from "@testing-library/react";
+import {user1} from "../users";
+import {BrowserRouter} from "react-router";
+import {act, configure, fireEvent, render, screen} from "@testing-library/react";
 import i18nConfig from "../../src/messages/messages";
-import { IntlProvider } from "react-intl";
-import { Table } from "react-bootstrap";
+import {IntlProvider} from "react-intl";
+import {Table} from "react-bootstrap";
 import AbstractPage from "../pages/AbstractPage";
+import {assert, beforeEach, describe, expect, test, vi} from "vitest";
 
 describe("UserRow component", () => {
     beforeEach(() => {
-        configure({ testIdAttribute: "id" });
-        dotenv.config({ path: "config/development.env" });
+        configure({testIdAttribute: "id"});
+        dotenv.config({path: ".env"});
     });
     test("renders a user", async () => {
         await renderUserRow(user1, null);
@@ -22,13 +21,13 @@ describe("UserRow component", () => {
         assert.equal((await screen.findByTestId("email")).textContent, "email1");
     });
     test("creates no error with empty user", async () => {
-        const emptyUser = new User();
+        const emptyUser = new User("");
         await renderUserRow(emptyUser, null);
         assert.equal((await screen.findByTestId("username")).textContent, "");
         assert.equal((await screen.findByTestId("email")).textContent, "");
     });
     test("deletes a user", async () => {
-        const deleteUser = jest.fn();
+        const deleteUser = vi.fn();
         await renderUserRow(user1, deleteUser);
         await act(async () => {
             await fireEvent.click(await AbstractPage.findButton("delete." + user1.username));
@@ -37,16 +36,16 @@ describe("UserRow component", () => {
     });
 });
 
-async function renderUserRow(user: User, deleteUser: (id: number) => void): Promise<void> {
+async function renderUserRow(user: User, deleteUser: ((id: number) => void) | null): Promise<void> {
     await act(async () => {
         render(
             <Table>
                 <tbody>
-                    <IntlProvider locale={i18nConfig.locale} messages={i18nConfig.messages}>
-                        <BrowserRouter>
-                            <UserRow user={user} deleteUser={deleteUser} />
-                        </BrowserRouter>
-                    </IntlProvider>
+                <IntlProvider locale={i18nConfig.locale} messages={i18nConfig.messages}>
+                    <BrowserRouter>
+                        <UserRow user={user} deleteUser={deleteUser}/>
+                    </BrowserRouter>
+                </IntlProvider>
                 </tbody>
             </Table>,
         );

@@ -1,5 +1,5 @@
 import User from "../domain/User";
-import UserService from "./UserService";
+import type UserService from "./UserService";
 import Http from "./Http";
 
 export default class UserServiceImpl implements UserService {

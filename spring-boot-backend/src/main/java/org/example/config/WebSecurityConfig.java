@@ -54,9 +54,7 @@ public class WebSecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.securityMatcher(
         (HttpServletRequest request) -> {
-          return JwtToken.getSubject(JwtAuthorizationFilter.getToken(request)) != null
-              ? true
-              : false;
+          return JwtToken.isOAuthToken(JwtAuthorizationFilter.getToken(request));
         });
     http.csrf(AbstractHttpConfigurer::disable);
     http.authorizeHttpRequests(

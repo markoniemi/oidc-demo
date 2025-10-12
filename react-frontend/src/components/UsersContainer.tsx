@@ -1,34 +1,29 @@
-import React from "react";
+import * as React from "react";
 import User from "../domain/User";
-import UserService from "../api/UserService";
+import type UserService from "../api/UserService";
 import UserServiceImpl from "../api/UserServiceImpl";
-import { FormattedMessage } from "react-intl";
-import { Button, Card, Table } from "react-bootstrap";
+import {FormattedMessage} from "react-intl";
+import {Button, Card, Table} from "react-bootstrap";
 import UserItem from "./UserRow";
-import Message, { MessageType } from "../domain/Message";
+import Message, {MessageType} from "../domain/Message";
 import Messages from "./Messages";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import * as Icons from "@fortawesome/free-solid-svg-icons";
-import Time from "./Time";
-import withRouter, { WithRouter } from "./withRouter";
-import { AuthContextProps, withAuth } from "react-oidc-context";
 import LoginService from "../api/LoginService";
+import Time from "./Time";
+import withRouter, {type WithRouter} from "./withRouter";
 
 export interface UsersContainerState {
     users: User[];
     messages?: ReadonlyArray<Message>;
 }
 
-export interface UsersContainerProps extends WithRouter {
-    auth: AuthContextProps;
-}
-
-class UsersContainer extends React.Component<UsersContainerProps, UsersContainerState> {
+class UsersContainer extends React.Component<WithRouter, UsersContainerState> {
     private userService: UserService = new UserServiceImpl();
 
-    constructor(props) {
+    constructor(props: WithRouter) {
         super(props);
-        this.state = { users: [] };
+        this.state = {users: []};
         this.deleteUser = this.deleteUser.bind(this);
         this.addUser = this.addUser.bind(this);
         this.logout = this.logout.bind(this);
@@ -37,8 +32,10 @@ class UsersContainer extends React.Component<UsersContainerProps, UsersContainer
     public override async componentDidMount(): Promise<void> {
         try {
             await this.fetchUsers();
-        } catch (error) {
-            this.setState({ messages: [{ text: error.message, type: MessageType.ERROR }] });
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                this.setState({messages: [{text: error.message, type: MessageType.ERROR}]});
+            }
         }
     }
 
@@ -47,11 +44,13 @@ class UsersContainer extends React.Component<UsersContainerProps, UsersContainer
     }
 
     public async deleteUser(id: number): Promise<void> {
-        if (window.confirm("Do you want to delete this item") === true) {
+        if (window.confirm("Do you want to delete this item")) {
             try {
                 await this.userService.delete(id);
-            } catch (error) {
-                this.setState({ messages: [{ text: error.message, type: MessageType.ERROR }] });
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                    this.setState({messages: [{text: error.message, type: MessageType.ERROR}]});
+                }
             }
             await this.fetchUsers();
         }
@@ -61,39 +60,39 @@ class UsersContainer extends React.Component<UsersContainerProps, UsersContainer
         let userItems;
         if (this.state.users) {
             userItems = this.state.users.map((item, index) => (
-                <UserItem key={index} user={item} index={index} deleteUser={this.deleteUser} />
+                <UserItem key={index} user={item} index={index} deleteUser={this.deleteUser}/>
             ));
         }
         return (
             <Card id="UsersContainer">
                 <Card.Body>
                     <Card.Title>
-                        <FormattedMessage id="users" />
+                        <FormattedMessage id="users"/>
                     </Card.Title>
-                    <Messages messages={this.state.messages} />
+                    <Messages messages={this.state.messages}/>
                     <Table>
                         <thead>
-                            <tr>
-                                <th>
-                                    <FormattedMessage id="username" />
-                                </th>
-                                <th>
-                                    <FormattedMessage id="email" />
-                                </th>
-                                <th />
-                            </tr>
+                        <tr>
+                            <th>
+                                <FormattedMessage id="username"/>
+                            </th>
+                            <th>
+                                <FormattedMessage id="email"/>
+                            </th>
+                            <th/>
+                        </tr>
                         </thead>
                         <tbody>{userItems}</tbody>
                     </Table>
                     <Button id="addUser" variant="primary" onClick={this.addUser}>
-                        <FontAwesomeIcon icon={Icons.faPlus} />
+                        <FontAwesomeIcon icon={Icons.faPlus}/>
                     </Button>
                     <Button id="logout" variant="primary" onClick={this.logout}>
-                        <FontAwesomeIcon icon={Icons.faSignOutAlt} />
+                        <FontAwesomeIcon icon={Icons.faSignOutAlt}/>
                     </Button>
                 </Card.Body>
                 <Card.Footer>
-                    <Time />
+                    <Time/>
                 </Card.Footer>
             </Card>
         );
@@ -103,17 +102,18 @@ class UsersContainer extends React.Component<UsersContainerProps, UsersContainer
         let users: User[];
         try {
             users = await this.userService.fetchUsers();
-        } catch (error) {
-            this.setState({ messages: [{ text: error.message, type: MessageType.ERROR }] });
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                this.setState({messages: [{text: error.message, type: MessageType.ERROR}]});
+            }
         }
-        this.setState(() => ({ users: users }));
+        this.setState(() => ({users: users}));
     }
 
     private async logout() {
         await LoginService.logout();
-        this.props.auth.removeUser();
         this.props.router.navigate("/");
     }
 }
 
-export default withAuth(withRouter(UsersContainer));
+export default withRouter(UsersContainer);

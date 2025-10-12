@@ -1,4 +1,4 @@
-import { ILoginForm } from "../components/LoginForm";
+import {type ILoginForm} from "../components/LoginForm";
 import Http from "./Http";
 import Jwt from "./Jwt";
 

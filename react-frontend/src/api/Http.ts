@@ -1,5 +1,4 @@
 import Jwt from "./Jwt";
-import OidcService from "./OidcService";
 
 export default class Http {
     public static async post(url: string, body: BodyInit): Promise<Response> {
@@ -18,10 +17,10 @@ export default class Http {
         return fetch(url, Http.createRequest("DELETE", body));
     }
 
-    private static createRequest(method: string, body: BodyInit): RequestInit {
+    private static createRequest(method: string, body?: BodyInit): RequestInit {
         return {
             method: method,
-            headers: Jwt.isAuthenticated() ? Jwt.getHeaders() : OidcService.getHeaders(),
+            headers: Jwt.getHeaders(),
             body: body,
         };
     }

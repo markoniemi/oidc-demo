@@ -1,5 +1,4 @@
-import { Location, NavigateFunction, Params, useLocation, useNavigate, useParams } from "react-router-dom";
-import React from "react";
+import {type Location, type NavigateFunction, type Params, useLocation, useNavigate, useParams} from "react-router";
 
 export interface RouterProps {
     location: Location;
@@ -17,7 +16,7 @@ function withRouter(Component: any) {
         const location = useLocation();
         const navigate = useNavigate();
         const params = useParams();
-        return <Component {...props} router={{ location, navigate, params }} />;
+        return <Component {...props} router={{location, navigate, params}}/>;
     }
 
     return ComponentWithRouterProp;

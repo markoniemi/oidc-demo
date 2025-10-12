@@ -1,24 +1,34 @@
-import { assert } from "chai";
 import * as dotenv from "dotenv";
-import { users } from "../users";
+import {users} from "../users";
 import fetchMock from "fetch-mock";
 import "isomorphic-fetch";
-import { configure, screen } from "@testing-library/react";
+import {configure, screen} from "@testing-library/react";
 import UsersPage from "../pages/UsersPage";
 import User from "../../src/domain/User";
-import { navigate, setLocation } from "../RouterMock";
-import sleep from "es7-sleep";
+import {setLocation} from "../RouterMock";
+import {sleep} from "../time";
+import {afterEach, assert, beforeEach, describe, expect, test, vi} from "vitest";
 
+export const navigate = vi.fn();
+vi.mock("react-router", async () => {
+    const mod = await vi.importActual<typeof import("react-router")>(
+        "react-router"
+    );
+    return {
+        ...mod,
+        useNavigate: () => navigate,
+    };
+});
 
 describe("UsersContainer component", () => {
     beforeEach(() => {
-        configure({ testIdAttribute: "id" });
-        fetchMock.restore();
+        configure({testIdAttribute: "id"});
+        fetchMock.mockGlobal();
         fetchMock.postOnce("/api/rest/time", "message");
-        dotenv.config({ path: "config/development.env" });
+        dotenv.config({path: ".env"});
     });
     afterEach(() => {
-        fetchMock.restore();
+        fetchMock.hardReset();
     });
     test("renders userlist", async () => {
         fetchMock.getOnce("/api/rest/users/", users);
@@ -29,7 +39,7 @@ describe("UsersContainer component", () => {
         await UsersPage.assertUser("user2");
     });
     test("creates no error with empty user", async () => {
-        const emptyUser = new User();
+        const emptyUser = new User("");
         fetchMock.getOnce("/api/rest/users/", [emptyUser]);
         setLocation("/users");
         await UsersPage.render();
@@ -57,7 +67,7 @@ describe("UsersContainer component", () => {
         assert.isNotNull(await screen.getByText("Error loading users"));
     });
     test("edits user", async () => {
-        window.confirm = jest.fn();
+        window.confirm = vi.fn();
         fetchMock.getOnce("/api/rest/users/", users);
         setLocation("/users");
         await UsersPage.render();
@@ -70,14 +80,14 @@ describe("UsersContainer component", () => {
         setLocation("/users");
         await UsersPage.render();
         await UsersPage.clickDelete("user1");
-        assert.isTrue(fetchMock.done());
+        assert.isTrue(fetchMock.callHistory.done());
     });
     test("logs out", async () => {
         fetchMock.getOnce("/api/rest/users/", users);
         setLocation("/users");
         await UsersPage.render();
         await UsersPage.clickLogout();
-        assert.isTrue(fetchMock.done());
+        assert.isTrue(fetchMock.callHistory.done());
         expect(navigate).toBeCalledWith("/");
     });
 });

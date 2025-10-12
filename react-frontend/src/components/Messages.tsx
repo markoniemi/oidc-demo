@@ -1,7 +1,7 @@
-import React from "react";
-import { Alert, Toast, ToastBody, ToastHeader } from "react-bootstrap";
-import { FormattedMessage } from "react-intl";
-import Message, { MessageType, MessageVariant } from "../domain/Message";
+import * as React from "react";
+import {Alert, Toast, ToastBody, ToastHeader} from "react-bootstrap";
+import {FormattedMessage} from "react-intl";
+import Message, {MessageType, type MessageVariant} from "../domain/Message";
 
 export interface MessageProps {
     messages?: ReadonlyArray<Message>;
@@ -17,7 +17,7 @@ export class Messages extends React.Component<MessageProps, MessageState> {
     constructor(props: MessageProps) {
         super(props);
         this.onClose = this.onClose.bind(this);
-        this.state = { show: true };
+        this.state = {show: true};
     }
 
     public override render(): React.ReactNode {
@@ -33,7 +33,7 @@ export class Messages extends React.Component<MessageProps, MessageState> {
                         right: 0,
                     }}
                 >
-                    <ToastHeader />
+                    <ToastHeader/>
                     <ToastBody>{this.props.messages.map(this.renderMessage)}</ToastBody>
                 </Toast>
             );
@@ -45,12 +45,12 @@ export class Messages extends React.Component<MessageProps, MessageState> {
     private renderMessage(message: Message): React.ReactNode {
         return (
             <Alert variant={Messages.mapTypeToStyle(message.type)} key={message.text}>
-                <FormattedMessage id={message.text} defaultMessage={message.text} />
+                <FormattedMessage id={message.text} defaultMessage={message.text}/>
             </Alert>
         );
     }
 
-    private static mapTypeToStyle(type: MessageType): MessageVariant {
+    private static mapTypeToStyle(type: MessageType | undefined): MessageVariant {
         if (type === MessageType.ERROR) {
             return "danger";
         }
@@ -64,7 +64,7 @@ export class Messages extends React.Component<MessageProps, MessageState> {
     }
 
     private onClose() {
-        this.setState({ show: false });
+        this.setState({show: false});
     }
 }
 
