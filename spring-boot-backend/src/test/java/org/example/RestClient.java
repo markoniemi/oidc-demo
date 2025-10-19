@@ -2,8 +2,11 @@ package org.example;
 
 import static io.restassured.RestAssured.given;
 import static org.springframework.http.HttpStatus.OK;
+
 import java.util.Arrays;
+
 import org.springframework.http.HttpStatus;
+
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
@@ -15,6 +18,8 @@ public class RestClient {
 
   public static <T> T get(String url, TypeRef<T> typeRef, String token, HttpStatus httpStatus) {
     return given()
+        .auth()
+        .oauth2(token)
         .headers(createHeaders(token))
         .get(url)
         .then()
@@ -31,6 +36,8 @@ public class RestClient {
 
   public static <T> T get(String url, Class<T> clazz, String token, HttpStatus httpStatus) {
     return given()
+        .auth()
+        .oauth2(token)
         .headers(createHeaders(token))
         .get(url)
         .then()
@@ -49,6 +56,8 @@ public class RestClient {
       String url, Object body, Class<T> clazz, String token, HttpStatus httpStatus) {
     return given()
         .body(body)
+        .auth()
+        .oauth2(token)
         .headers(createHeaders(token))
         .post(url)
         .then()
@@ -63,6 +72,8 @@ public class RestClient {
       String url, String body, TypeRef<T> typeRef, String token, HttpStatus httpStatus) {
     return given()
         .body(body)
+        .auth()
+        .oauth2(token)
         .headers(createHeaders(token))
         .post(url)
         .then()
@@ -77,6 +88,8 @@ public class RestClient {
       String url, String body, TypeRef<T> typeRef, String token, HttpStatus httpStatus) {
     return given()
         .body(body)
+        .auth()
+        .oauth2(token)
         .headers(createHeaders(token))
         .put(url)
         .then()
@@ -89,6 +102,8 @@ public class RestClient {
 
   public static void delete(String url, String token, HttpStatus httpStatus) {
     given()
+        .auth()
+        .oauth2(token)
         .headers(createHeaders(token))
         .delete(url)
         .then()
@@ -100,7 +115,7 @@ public class RestClient {
   private static Headers createHeaders(String token) {
     return new Headers(
         Arrays.asList(
-            new Header("Authorization", "Bearer " + token),
+            //            new Header("Authorization", "Bearer " + token),
             new Header("Content-Type", "application/json"),
             new Header("Accept", "application/json")));
   }

@@ -4,20 +4,31 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
+
 import java.util.Arrays;
 import java.util.List;
+
 import org.example.model.user.Role;
 import org.example.model.user.User;
-import org.example.security.JwtToken;
 import org.example.service.user.UserRestClient;
 import org.example.service.user.ValidationError;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
+
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class UserServiceRestIT extends AbstractIntegrationTestBase {
-  private UserRestClient userService = new UserRestClient(JwtToken.create("admin"));
+public class UserServiceOAuthRestIT extends AbstractIntegrationTestBase {
+  private UserRestClient userService;
+  @Autowired OAuthTokenHelper oAuthTokenHelper;
+
+  @BeforeEach
+  public void init() {
+    userService = new UserRestClient(oAuthTokenHelper.getAccessToken());
+  }
 
   @Test
   public void findAll() throws JsonProcessingException {
@@ -63,10 +74,10 @@ public class UserServiceRestIT extends AbstractIntegrationTestBase {
     ValidationError validationError = validationErrors.get(0);
     log.debug(validationError);
     assertEquals("User", validationError.getObjectName());
-//    assertEquals("password", validationError.getField());
+    //    assertEquals("password", validationError.getField());
     assertEquals("field.required", validationError.getCode());
   }
-  
+
   @Test
   public void createWithExistingUser() {
     User user = new User("username", "password", "email", Role.ROLE_USER);
@@ -84,13 +95,14 @@ public class UserServiceRestIT extends AbstractIntegrationTestBase {
     assertEquals(3, validationErrors.size());
     ValidationError validationError = validationErrors.get(0);
     assertEquals("User", validationError.getObjectName());
-//    assertEquals("password", validationError.getField());
+    //    assertEquals("password", validationError.getField());
     assertEquals("field.required", validationError.getCode());
   }
+
   @Test
   public void updateWithNonexistingUser() throws JsonProcessingException {
     String userJson = "{\"id\":555, \"username\":\"username\"}";
-    userService.update(userJson,555, BAD_REQUEST);
+    userService.update(userJson, 555, BAD_REQUEST);
   }
 
   @Test

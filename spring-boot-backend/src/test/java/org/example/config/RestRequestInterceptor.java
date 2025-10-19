@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class RestRequestInterceptor implements ClientHttpRequestInterceptor {
   String jwtToken;
 
-  RestRequestInterceptor(String jwtToken) {
+  public RestRequestInterceptor(String jwtToken) {
     this.jwtToken = jwtToken;
   }
 
