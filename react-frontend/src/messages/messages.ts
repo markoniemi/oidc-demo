@@ -6,6 +6,7 @@ const i18nConfig = {
         id: "Id",
         id_label: "Id",
         login: "Login",
+        "login.google": "Login with Google",
         username: "Username",
         username_label: "Username",
         email: "Email",

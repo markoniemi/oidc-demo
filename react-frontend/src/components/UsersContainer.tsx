@@ -12,16 +12,19 @@ import * as Icons from "@fortawesome/free-solid-svg-icons";
 import LoginService from "../api/LoginService";
 import Time from "./Time";
 import withRouter, {type WithRouter} from "./withRouter";
+import {type AuthContextProps, withAuth} from "react-oidc-context";
 
 export interface UsersContainerState {
     users: User[];
     messages?: ReadonlyArray<Message>;
 }
-
-class UsersContainer extends React.Component<WithRouter, UsersContainerState> {
+export interface UsersContainerProps extends WithRouter {
+    auth: AuthContextProps;
+}
+class UsersContainer extends React.Component<UsersContainerProps, UsersContainerState> {
     private userService: UserService = new UserServiceImpl();
 
-    constructor(props: WithRouter) {
+    constructor(props: UsersContainerProps) {
         super(props);
         this.state = {users: []};
         this.deleteUser = this.deleteUser.bind(this);
@@ -112,8 +115,9 @@ class UsersContainer extends React.Component<WithRouter, UsersContainerState> {
 
     private async logout() {
         await LoginService.logout();
+        this.props.auth.removeUser();
         this.props.router.navigate("/");
     }
 }
 
-export default withRouter(UsersContainer);
+export default withAuth(withRouter(UsersContainer));

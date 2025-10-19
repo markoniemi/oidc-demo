@@ -21,7 +21,6 @@ describe("App component", () => {
     });
     test("shows login page", async () => {
         await LoginPage.render();
-        await sleep(100);
         LoginPage.assertPageLoaded();
     });
     test("login, edit, delete and add user", async () => {

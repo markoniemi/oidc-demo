@@ -2,6 +2,9 @@ package org.example.model.user;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -35,6 +38,7 @@ import lombok.ToString;
 @Table(name = "app_users", uniqueConstraints = @UniqueConstraint(columnNames = "username"))
 @XmlRootElement(name = "User")
 @XmlAccessorType(XmlAccessType.FIELD)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

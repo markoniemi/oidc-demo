@@ -1,11 +1,17 @@
-import App from "../../src/components/App";
 import {sleep} from "../time";
 import {act, fireEvent, render, screen} from "@testing-library/react";
+import {oidcConfig} from "../../src/api/OidcService";
+import {AuthProvider} from "react-oidc-context";
+import Content from "../../src/components/Content.tsx";
 
 export default class AbstractPage {
     public static async render(): Promise<void> {
         await act(async () => {
-            await render(<App/>);
+            await render(
+                <AuthProvider {...oidcConfig} onSigninCallback={onSigninCallback}>
+                    <Content/>
+                </AuthProvider>,
+            );
         });
         await sleep(100);
     }
@@ -34,4 +40,8 @@ export default class AbstractPage {
     public static async selectOption(id: string, value: string): Promise<void> {
         fireEvent.change((await screen.getByTestId(id)) as HTMLInputElement, {target: {value: value}});
     }
+}
+
+async function onSigninCallback(): Promise<void> {
+    window.history.replaceState({}, document.title, window.location.pathname);
 }
