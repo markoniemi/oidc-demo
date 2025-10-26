@@ -24,11 +24,16 @@ public class TestcontainersConfig {
             .withAdminUsername("admin")
             .withAdminPassword("admin")
             .withRealmImportFile("/realm-export.json")
-            .withExposedPorts(8080,9000)
-            .withCreateContainerCmdModifier(cmd -> cmd.withHostConfig(
-                new HostConfig().withPortBindings(new PortBinding(Ports.Binding.bindPort(9090), new ExposedPort(8080)),new PortBinding(Ports.Binding.bindPort(9000), new ExposedPort(9000)))
-            ));            
+            .withExposedPorts(8080, 9000)
+            .withCreateContainerCmdModifier(cmd -> cmd.withHostConfig(createPortBindings()));
     keycloak.start();
     return keycloak;
+  }
+
+  private HostConfig createPortBindings() {
+    return new HostConfig()
+        .withPortBindings(
+            new PortBinding(Ports.Binding.bindPort(9090), new ExposedPort(8080)),
+            new PortBinding(Ports.Binding.bindPort(9000), new ExposedPort(9000)));
   }
 }
