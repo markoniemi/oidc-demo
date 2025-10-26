@@ -17,11 +17,12 @@ public class SeleniumConfig {
     WebDriverManager.chromedriver().setup();
     ChromeOptions options = new ChromeOptions();
     options.addArguments("headless=new");
-    options.addArguments("window-size=1200x800");
+    options.addArguments("window-size=1200,1000");
     options.addArguments("no-sandbox");
     options.addArguments("proxy-server='direct://'");
     options.addArguments("proxy-bypass-list=*");
     options.addArguments("remote-allow-origins=*");
+    options.addArguments("guest");
     ChromeDriver chromeDriver = new ChromeDriver(options);
     chromeDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
     return chromeDriver;

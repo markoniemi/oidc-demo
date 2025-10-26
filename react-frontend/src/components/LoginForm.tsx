@@ -7,11 +7,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as Icons from "@fortawesome/free-solid-svg-icons";
 import Jwt from "../api/Jwt";
 import Message, { MessageType } from "../domain/Message";
-import { Form as FormikForm, Formik, FormikProps } from "formik";
+import { Form as FormikForm, Formik, type FormikProps } from "formik";
 import * as Yup from "yup";
-import InputField from "./InputField";
-import { AuthContextProps, withAuth } from "react-oidc-context";
-import withRouter from "./withRouter";
+import {InputField} from "./InputField";
+import { type AuthContextProps, withAuth } from "react-oidc-context";
+import withRouter, {type WithRouter} from "./withRouter";
 
 export interface ILoginForm {
     username: string;
@@ -22,17 +22,17 @@ export interface ILoginState extends ILoginForm {
     messages?: ReadonlyArray<Message>;
 }
 
-export interface WithAuthProps {
-    auth?: AuthContextProps;
+export interface LoginProps extends WithRouter {
+    auth: AuthContextProps;
 }
 
-class LoginForm extends React.Component<WithAuthProps, ILoginState> {
+class LoginForm extends React.Component<LoginProps, ILoginState> {
     private schema = Yup.object().shape({
         username: Yup.string().required("username.required"),
         password: Yup.string().required("password.required"),
     });
 
-    constructor(props: WithAuthProps) {
+    constructor(props: LoginProps) {
         super(props);
         this.onSubmit = this.onSubmit.bind(this);
         this.login = this.login.bind(this);
@@ -40,7 +40,7 @@ class LoginForm extends React.Component<WithAuthProps, ILoginState> {
         this.state = { username: "", password: "" };
     }
 
-    public render(): JSX.Element {
+    public render(): React.ReactNode {
         return (
             <Card id="LoginForm">
                 <Row>
@@ -98,17 +98,17 @@ class LoginForm extends React.Component<WithAuthProps, ILoginState> {
 
     public async onSubmit(values: ILoginForm) {
         this.setState({ ...values });
-        await this.login();
+        await this.login({ ...values });
     }
 
-    private async login(): Promise<void> {
-        const loginForm: ILoginForm = { ...this.state };
+    private async login(loginForm: ILoginForm): Promise<void> {
         try {
             const token = await LoginService.login(loginForm);
             Jwt.setToken(token);
             window.location.href = "/users";
-            // this.props.router.navigate("/users");
+            this.props.router.navigate("/users");
         } catch (error) {
+            // @ts-ignore
             this.setState({ messages: [{ text: error.message, type: MessageType.ERROR }] });
         }
     }

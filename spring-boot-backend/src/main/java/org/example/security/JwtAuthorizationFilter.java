@@ -1,21 +1,18 @@
 package org.example.security;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import java.io.IOException;
+import java.util.ArrayList;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
@@ -49,7 +46,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     if (StringUtils.isBlank(token)) {
       return null;
     }
-    String user = JwtToken.verifyToken(token);
+    String user = JwtToken.getSubject(token);
     if (StringUtils.isBlank(user)) {
       return null;
     }

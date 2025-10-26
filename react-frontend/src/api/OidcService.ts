@@ -1,4 +1,4 @@
-import {OidcClientSettings, User} from "oidc-client-ts";
+import {type OidcClientSettings, User} from "oidc-client-ts";
 
 export default class OidcService {
     public static getUser() {
@@ -16,14 +16,15 @@ export default class OidcService {
         return headers;
     }
 
-    public static getToken(): string {
+    public static getToken(): string | undefined {
         return OidcService.getUser()?.id_token;
     }
 }
 // TODO move this inside class
+// https://console.cloud.google.com/apis/credentials?project=oidc-demo-426909
 export const oidcConfig: OidcClientSettings = {
-    authority: "https://accounts.google.com",
-    client_id: "977467276012-1pkp49dcqgj8k0f3dprbl53avt8sgcep.apps.googleusercontent.com",
+    authority: "http://localhost:9090/realms/oidc-demo",
+    client_id: "oidc-test",
     redirect_uri: "http://localhost:8081",
-    client_secret: "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",
+    client_secret: "Uq8odAqLX59MuZfNXRwgSRPA3w4qz5TW",
 };

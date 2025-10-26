@@ -1,2 +1,1 @@
-type Empty = Readonly<Record<string, never>>;
-export default Empty;
+export type Empty = Readonly<Record<string, never>>;

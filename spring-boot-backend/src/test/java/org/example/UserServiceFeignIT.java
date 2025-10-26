@@ -9,9 +9,11 @@ import org.example.model.user.Role;
 import org.example.model.user.User;
 import org.example.service.user.UserService;
 import org.junit.jupiter.api.Test;
-import org.springframework.validation.BindException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import jakarta.annotation.Resource;
 
 public class UserServiceFeignIT extends AbstractIntegrationTestBase {
@@ -25,13 +27,14 @@ public class UserServiceFeignIT extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void create() throws BindException {
+  @DatabaseSetup(value = "classpath:users.xml", type = DatabaseOperation.REFRESH)
+  @DatabaseTearDown(value = "classpath:users.xml", type = DatabaseOperation.DELETE)
+  public void create() {
     User user = new User("username", "password", "email", Role.ROLE_USER);
     userService.create(user);
     User savedUser = userService.findByUsername("username");
     assertEquals("username", savedUser.getUsername());
     assertEquals("email", savedUser.getEmail());
-    //        assertTrue(userService.exists(savedUser.getId()));
     savedUser = userService.findById(savedUser.getId());
     assertEquals("username", user.getUsername());
     userService.delete(savedUser.getId());

@@ -3,7 +3,6 @@ package org.example.service.user;
 import static org.example.RestClient.get;
 import static org.example.RestClient.post;
 import static org.example.RestClient.put;
-import static org.example.security.JwtToken.createToken;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 import java.util.List;
@@ -16,33 +15,38 @@ import io.restassured.common.mapper.TypeRef;
 
 public class UserRestClient {
   private String url = "http://localhost:8080/api/rest";
+  private String token;
+
+  public UserRestClient(String token) {
+    this.token = token;
+  }
 
   public List<User> findAll() {
-    return get(url + "/users/", userListType(), createToken("admin"));
+    return get(url + "/users/", userListType(), token);
   }
 
   public List<User> findByEmail(String email) {
-    return get(url + "/users?email=" + email, userListType(), createToken("admin"));
+    return get(url + "/users?email=" + email, userListType(), token);
   }
 
   public List<User> findByUsername(String username) {
-    return get(url + "/users?username=" + username, userListType(), createToken("admin"));
+    return get(url + "/users?username=" + username, userListType(), token);
   }
 
   public User create(User user) {
-    return post(url + "/users", user, User.class, createToken("admin"));
+    return post(url + "/users", user, User.class, token);
   }
 
   public List<ValidationError> create(String userJson, HttpStatus httpStatus) {
-    return post(url + "/users", userJson, errorListType(), createToken("admin"), httpStatus);
+    return post(url + "/users", userJson, errorListType(), token, httpStatus);
   }
 
   public List<ValidationError> update(String userJson, long id, HttpStatus httpStatus) {
-    return put(url + "/users/" + id, userJson, errorListType(), createToken("admin"), httpStatus);
+    return put(url + "/users/" + id, userJson, errorListType(), token, httpStatus);
   }
 
   public User find(Long id) {
-    return get(url + "/users/" + id, User.class, createToken("admin"));
+    return get(url + "/users/" + id, User.class, token);
   }
 
   public void delete(Long id) {
@@ -50,7 +54,7 @@ public class UserRestClient {
   }
 
   public void delete(Long id, HttpStatus httpStatus) {
-    RestClient.delete(url + "/users/" + id, createToken("admin"), httpStatus);
+    RestClient.delete(url + "/users/" + id, token, httpStatus);
   }
 
   private TypeRef<List<User>> userListType() {

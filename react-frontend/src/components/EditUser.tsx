@@ -1,17 +1,17 @@
-import React from "react";
+import * as React from "react";
 import User from "../domain/User";
-import UserService from "../api/UserService";
+import type UserService from "../api/UserService";
 import UserServiceImpl from "../api/UserServiceImpl";
-import { FormattedMessage } from "react-intl";
+import {FormattedMessage} from "react-intl";
 import Messages from "./Messages";
-import Message, { MessageType } from "../domain/Message";
-import { Button, Card, Col, Form, Row } from "react-bootstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Message, {MessageType} from "../domain/Message";
+import {Button, Card, Col, Form, Row} from "react-bootstrap";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import * as Icons from "@fortawesome/free-solid-svg-icons";
-import { Form as FormikForm, Formik, FormikProps } from "formik";
+import {Form as FormikForm, Formik, type FormikProps} from "formik";
 import * as Yup from "yup";
-import InputField from "./InputField";
-import withRouter, { WithRouter } from "./withRouter";
+import withRouter, {type WithRouter} from "./withRouter";
+import {InputField} from "./InputField.tsx";
 
 export interface RouteParam extends WithRouter {
     id: string;
@@ -31,21 +31,24 @@ class EditUser extends React.Component<RouteParam, EditUserState> {
         role: Yup.string().required("role.required"),
     });
 
-    constructor(props) {
+    constructor(props: RouteParam) {
         super(props);
         this.submitUser = this.submitUser.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this.onCancel = this.onCancel.bind(this);
         this.renderForm = this.renderForm.bind(this);
-        this.state = { user: new User("", "", "", null) };
+        this.state = {user: new User("", "", "")};
     }
 
     public override async componentDidMount(): Promise<void> {
         const id = Number(this.props.router.params.id);
         if (id) {
             try {
-                this.setState({ user: await this.userService.findById(id) });
-            } catch (error) {
-                this.setState({ messages: [{ text: error.message, type: MessageType.ERROR }] });
+                this.setState({user: await this.userService.findById(id)});
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                    this.setState({messages: [{text: error.message, type: MessageType.ERROR}]});
+                }
             }
         }
     }
@@ -55,7 +58,7 @@ class EditUser extends React.Component<RouteParam, EditUserState> {
             <Card id="EditUser">
                 <Card.Body>
                     <Card.Title>
-                        <FormattedMessage id="user" />
+                        <FormattedMessage id="user"/>
                     </Card.Title>
                     <Formik
                         initialValues={this.state.user}
@@ -73,19 +76,18 @@ class EditUser extends React.Component<RouteParam, EditUserState> {
     private renderForm(form: FormikProps<User>): React.ReactNode {
         return (
             <FormikForm>
-                <Messages messages={this.state.messages} />
+                <Messages messages={this.state.messages}/>
                 <Form.Group>
                     <InputField
                         name="id"
                         disabled={true}
                         value={form.values.id ? form.values.id.toString() : ""}
-                        formik={form}
                     />
-                    <InputField name="username" formik={form} />
-                    <InputField name="email" formik={form} />
-                    <InputField name="password" type="password" formik={form} />
-                    <InputField name="role" type="select" as="select" formik={form}>
-                        <option value={null} />
+                    <InputField name="username"/>
+                    <InputField name="email"/>
+                    <InputField name="password" type="password"/>
+                    <InputField name="role" type="select" as="select">
+                        <option value={""}/>
                         <FormattedMessage id="role.ROLE_ADMIN">
                             {(message) => <option value="ROLE_ADMIN">{message}</option>}
                         </FormattedMessage>
@@ -96,7 +98,10 @@ class EditUser extends React.Component<RouteParam, EditUserState> {
                     <Row>
                         <Col sm={5}>
                             <Button type="submit" id="saveUser" size="sm" className="pull-right">
-                                <FontAwesomeIcon icon={Icons.faCheckSquare} />
+                                <FontAwesomeIcon icon={Icons.faCheckSquare}/>
+                            </Button>
+                            <Button id="cancel" size="sm" className="pull-right" onClick={this.onCancel}>
+                                <FontAwesomeIcon icon={Icons.faCancel}/>
                             </Button>
                         </Col>
                     </Row>
@@ -106,12 +111,15 @@ class EditUser extends React.Component<RouteParam, EditUserState> {
     }
 
     public async onSubmit(values: User) {
-        this.setState({ user: values });
-        await this.submitUser();
+        this.setState({user: values});
+        await this.submitUser(values);
     }
 
-    private async submitUser(): Promise<void> {
-        const user: User = this.state.user;
+    public async onCancel() {
+        this.props.router.navigate("/users");
+    }
+
+    private async submitUser(user: User): Promise<void> {
         try {
             if (user.id == undefined) {
                 await this.userService.create(user);
@@ -119,8 +127,10 @@ class EditUser extends React.Component<RouteParam, EditUserState> {
                 await this.userService.update(user);
             }
             this.props.router.navigate("/users");
-        } catch (error) {
-            this.setState({ messages: [{ text: error.message, type: MessageType.ERROR }] });
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                this.setState({messages: [{text: error.message, type: MessageType.ERROR}]});
+            }
         }
     }
 }

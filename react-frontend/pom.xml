@@ -15,7 +15,7 @@
       <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
-        <version>1.15.0</version>
+        <version>1.15.1</version>
         <executions>
           <execution>
             <id>install node and npm</id>
@@ -24,8 +24,8 @@
               <goal>install-node-and-npm</goal>
             </goals>
             <configuration>
-              <nodeVersion>v18.18.0</nodeVersion>
-              <npmVersion>8.19.4</npmVersion>
+              <nodeVersion>v22.12.0</nodeVersion>
+              <npmVersion>11.4.2</npmVersion>
             </configuration>
           </execution>
           <execution>
@@ -45,7 +45,7 @@
             </goals>
             <phase>compile</phase>
             <configuration>
-              <arguments>run compile</arguments>
+              <arguments>run build</arguments>
             </configuration>
           </execution>
           <execution>
@@ -75,7 +75,7 @@
               <outputDirectory>${project.build.directory}/classes/META-INF/resources/webjars/${artifactId}/${project.version}</outputDirectory>
               <resources>
                 <resource>
-                  <directory>dist/build</directory>
+                  <directory>build</directory>
                   <filtering>false</filtering>
                 </resource>
               </resources>

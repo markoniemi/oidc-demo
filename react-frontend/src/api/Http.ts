@@ -1,5 +1,6 @@
-import Jwt from "./Jwt";
-import OidcService from "./OidcService";
+// import OidcService from "./OidcService.ts";
+import Jwt from "./Jwt.ts";
+import OidcService from "./OidcService.ts";
 
 export default class Http {
     public static async post(url: string, body: BodyInit): Promise<Response> {
@@ -18,11 +19,17 @@ export default class Http {
         return fetch(url, Http.createRequest("DELETE", body));
     }
 
-    private static createRequest(method: string, body: BodyInit): RequestInit {
+    private static createRequest(method: string, body?: BodyInit): RequestInit {
         return {
             method: method,
-            headers: Jwt.isAuthenticated() ? Jwt.getHeaders() : OidcService.getHeaders(),
+            headers: this.getHeaders(),
             body: body,
         };
+    }
+    private static getHeaders(): Headers {
+        if (Jwt.isAuthenticated()){
+            return Jwt.getHeaders();
+        }
+        return OidcService.getHeaders();
     }
 }

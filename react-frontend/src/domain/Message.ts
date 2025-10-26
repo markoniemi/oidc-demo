@@ -1,3 +1,4 @@
+// @ts-ignore
 export enum MessageType {
     INFO = "INFO",
     WARN = "WARN",
@@ -5,27 +6,16 @@ export enum MessageType {
     SUCCESS = "SUCCESS",
 }
 
-// export enum Variant {
-//     | "primary"
-// | "secondary"
-// | "success"
-// | "danger"
-// | "warning"
-// | "info"
-// | "dark"
-// | "light";
-// }
-
 export type MessageVariant = "primary" | "secondary" | "success" | "danger" | "warning" | "info" | "dark" | "light";
 
 export default class Message {
     public id?: string;
     public text: string;
-    public type: MessageType;
+    public type?: MessageType;
 
     constructor() {
         this.id = "";
         this.text = "";
-        this.type = null;
+        this.type = undefined;
     }
 }

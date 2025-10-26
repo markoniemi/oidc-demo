@@ -3,7 +3,6 @@ package org.example.service.user;
 import javax.naming.AuthenticationException;
 import org.example.model.user.User;
 import org.example.security.JwtToken;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,7 +35,7 @@ public class LoginServiceImpl implements LoginService {
     }
     if (user.getPassword().equals(userToLogin.getPassword())) {
       log.debug("Username: {} logged in.", user.getUsername());
-      return JwtToken.createToken(user.getUsername());
+      return JwtToken.create(user.getUsername());
     } else {
       throw new AuthenticationException("Login error");
     }
@@ -46,7 +45,7 @@ public class LoginServiceImpl implements LoginService {
   @POST
   @Path("/logout")
   public void logout(@Context HttpServletRequest request) {
-    String authenticationToken = (String) request.getHeader(HttpHeaders.AUTHORIZATION);
+    String authenticationToken = (String) request.getHeader(JwtToken.AUTHORIZATION_HEADER);
     log.debug(authenticationToken);
   }
 }

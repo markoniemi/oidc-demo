@@ -1,24 +1,24 @@
-import { assert } from "chai";
-import * as React from "react";
 import * as dotenv from "dotenv";
 import fetchMock from "fetch-mock";
-import sleep from "es7-sleep";
+import {sleep} from "../time";
 import Time from "../../src/components/Time";
-import { act, configure, fireEvent, render, screen } from "@testing-library/react";
+import {act, configure, fireEvent, render, screen} from "@testing-library/react";
 import AbstractPage from "../pages/AbstractPage";
+import {afterEach, assert, beforeEach, describe, test} from "vitest";
 
 describe("Time component", () => {
     beforeEach(() => {
-        configure({ testIdAttribute: "id" });
-        dotenv.config({ path: "config/development.env" });
+        configure({testIdAttribute: "id"});
+        dotenv.config({path: ".env"});
+        fetchMock.mockGlobal();
     });
     afterEach(() => {
-        fetchMock.restore();
+        fetchMock.hardReset();
     });
     test("renders text", async () => {
         fetchMock.post("/api/rest/time", "response");
         await act(async () => {
-            await render(<Time />);
+            await render(<Time/>);
         });
         await sleep(100);
         assert.equal((await screen.findByTestId("message")).textContent, "response");
@@ -27,7 +27,7 @@ describe("Time component", () => {
         fetchMock.postOnce("/api/rest/time", "response1");
         fetchMock.postOnce("/api/rest/time", "response2");
         await act(async () => {
-            await render(<Time />);
+            await render(<Time/>);
         });
         await sleep(100);
         assert.equal((await screen.findByTestId("message")).textContent, "response1");

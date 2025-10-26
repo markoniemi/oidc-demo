@@ -3,8 +3,8 @@ export default class Jwt {
     public static readonly JWT_TOKEN_KEY = "jwt";
 
     public static getHeaders(): Headers {
-        const headers = new Headers({ "content-type": "application/json" });
-        const jwtToken: string = sessionStorage.getItem(Jwt.JWT_TOKEN_KEY);
+        const headers = new Headers({"content-type": "application/json"});
+        const jwtToken: string | null = sessionStorage.getItem(Jwt.JWT_TOKEN_KEY);
         // this.debug(`setting jwt to header: ${jwtToken}`);
         if (jwtToken) {
             headers.append("Authorization", `Bearer ${jwtToken}`);
@@ -21,7 +21,7 @@ export default class Jwt {
         sessionStorage.setItem(Jwt.JWT_TOKEN_KEY, token);
     }
 
-    public static getToken(): string {
+    public static getToken(): string | null {
         return sessionStorage.getItem(Jwt.JWT_TOKEN_KEY);
     }
 

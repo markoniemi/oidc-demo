@@ -1,8 +1,8 @@
 import React from "react";
 import { AuthProvider } from "react-oidc-context";
-import Empty from "../domain/Empty";
 import { oidcConfig } from "../api/OidcService";
 import Content from "./Content";
+import type {Empty} from "../domain/Empty";
 
 class App extends React.Component<Empty, Empty> {
     public override render(): React.ReactNode {

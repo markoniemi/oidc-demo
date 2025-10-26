@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+  <app_users id="1024" password="password" email="email" username="existingUsername" role="ROLE_USER" />
+</dataset>

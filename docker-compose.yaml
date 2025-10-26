@@ -1,0 +1,17 @@
+services:
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:26.4
+    ports:
+      - 9090:8080
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+      - spring-boot-backend/src/test/resources:/opt/keycloak/data/import
+    command:
+      - 'start-dev'
+      - '--import-realm'
+volumes:
+  keycloak_data:
