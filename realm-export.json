@@ -335,10 +335,10 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "Uq8odAqLX59MuZfNXRwgSRPA3w4qz5TW",
       "redirectUris": [
-        "/*"
+        "http://localhost:8081"
       ],
       "webOrigins": [
-        "/*"
+        "http://localhost:8081"
       ],
       "notBefore": 0,
       "bearerOnly": false,
@@ -398,11 +398,13 @@
           {
             "name": "Default Policy",
             "description": "A policy that grants access only for users within this realm",
-            "type": "js",
+            "type": "regex",
             "logic": "POSITIVE",
             "decisionStrategy": "AFFIRMATIVE",
             "config": {
-              "code": "// by default, grants any permission associated with this policy\n$evaluation.grant();\n"
+              "targetContextAttributes" : "false",
+              "pattern" : ".*",
+              "targetClaim" : "sub"
             }
           },
           {
@@ -2252,5 +2254,26 @@
   },
   "clientPolicies": {
     "policies": []
-  }
+  },
+  "users": [
+    {
+      "username": "admin",
+      "email": "admin@admin.com",
+      "firstName": "admin",
+      "lastName": "admin",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin"
+        }
+      ],
+      "clientRoles": {
+        "account": [
+          "view-profile",
+          "manage-account"
+        ]
+      }
+    }
+  ]  
 }

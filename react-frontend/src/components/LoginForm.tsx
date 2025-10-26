@@ -11,7 +11,7 @@ import { Form as FormikForm, Formik, type FormikProps } from "formik";
 import * as Yup from "yup";
 import {InputField} from "./InputField";
 import { type AuthContextProps, withAuth } from "react-oidc-context";
-import withRouter from "./withRouter";
+import withRouter, {type WithRouter} from "./withRouter";
 
 export interface ILoginForm {
     username: string;
@@ -22,17 +22,17 @@ export interface ILoginState extends ILoginForm {
     messages?: ReadonlyArray<Message>;
 }
 
-export interface WithAuthProps {
+export interface LoginProps extends WithRouter {
     auth: AuthContextProps;
 }
 
-class LoginForm extends React.Component<WithAuthProps, ILoginState> {
+class LoginForm extends React.Component<LoginProps, ILoginState> {
     private schema = Yup.object().shape({
         username: Yup.string().required("username.required"),
         password: Yup.string().required("password.required"),
     });
 
-    constructor(props: WithAuthProps) {
+    constructor(props: LoginProps) {
         super(props);
         this.onSubmit = this.onSubmit.bind(this);
         this.login = this.login.bind(this);
@@ -105,8 +105,7 @@ class LoginForm extends React.Component<WithAuthProps, ILoginState> {
         try {
             const token = await LoginService.login(loginForm);
             Jwt.setToken(token);
-            // window.location.href = "/users";
-            // @ts-ignore
+            window.location.href = "/users";
             this.props.router.navigate("/users");
         } catch (error) {
             // @ts-ignore
