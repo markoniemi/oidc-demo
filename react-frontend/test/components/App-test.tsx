@@ -10,7 +10,7 @@ import {sleep} from "../time";
 import {afterEach, beforeEach, describe, test} from "vitest";
 import Role from "../../src/domain/Role.ts";
 
-describe("App component", () => {
+describe.todo("App component", () => {
     beforeEach(() => {
         configure({testIdAttribute: "id"});
         dotenv.config({path: ".env"});

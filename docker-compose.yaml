@@ -9,7 +9,7 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
     volumes:
       - keycloak_data:/opt/keycloak/data
-      - ./:/opt/keycloak/data/import
+      - spring-boot-backend/src/test/resources:/opt/keycloak/data/import
     command:
       - 'start-dev'
       - '--import-realm'
