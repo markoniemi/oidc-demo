@@ -5,6 +5,7 @@ import {configure, screen} from "@testing-library/react";
 import LoginPage from "../pages/LoginPage";
 import {setLocation} from "../RouterMock";
 import {afterEach, assert, beforeEach, describe, expect, test, vi} from "vitest";
+import Jwt from "../../src/api/Jwt.ts";
 
 export const navigate = vi.fn();
 vi.mock("react-router", async () => {
@@ -17,7 +18,7 @@ vi.mock("react-router", async () => {
     };
 });
 
-describe.todo("LoginForm component", () => {
+describe("LoginForm component", () => {
     beforeEach(() => {
         configure({testIdAttribute: "id"});
         dotenv.config({path: ".env"});
@@ -27,6 +28,7 @@ describe.todo("LoginForm component", () => {
     });
     afterEach(() => {
         fetchMock.hardReset();
+        Jwt.clearToken();
     });
     test("opens users page with valid credentials", async () => {
         setLocation();
@@ -36,7 +38,6 @@ describe.todo("LoginForm component", () => {
         await LoginPage.setLogin("user1", "user1");
         await LoginPage.assertLogin("user1", "user1");
         await LoginPage.pressEnter();
-        // expect(history.push).toBeCalledWith("/users");
         expect(navigate).toBeCalledWith("/users");
     });
     test("shows validation error with empty credentials", async () => {

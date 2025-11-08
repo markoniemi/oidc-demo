@@ -11,7 +11,7 @@ export default class LoginPage extends AbstractPage {
         await LoginPage.assertPageLoaded();
         await LoginPage.setLogin(username, password);
         await LoginPage.assertLogin(username, password);
-        fetchMock.post("/api/rest/auth/login/", "token", );
+        fetchMock.post("/api/rest/auth/login/", "token");
         fetchMock.get("/api/rest/users/", users);
         fetchMock.post("/api/rest/time", "message");
         await LoginPage.clickLogin();

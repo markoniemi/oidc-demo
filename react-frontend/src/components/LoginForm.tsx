@@ -105,7 +105,7 @@ class LoginForm extends React.Component<LoginProps, ILoginState> {
         try {
             const token = await LoginService.login(loginForm);
             Jwt.setToken(token);
-            window.location.href = "/users";
+            window.location.assign("/users");
             this.props.router.navigate("/users");
         } catch (error) {
             // @ts-ignore

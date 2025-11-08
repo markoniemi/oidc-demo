@@ -8,6 +8,7 @@ import User from "../../src/domain/User";
 import {setLocation} from "../RouterMock";
 import {sleep} from "../time";
 import {afterEach, assert, beforeEach, describe, expect, test, vi} from "vitest";
+import Jwt from "../../src/api/Jwt.ts";
 
 export const navigate = vi.fn();
 vi.mock("react-router", async () => {
@@ -20,12 +21,13 @@ vi.mock("react-router", async () => {
     };
 });
 
-describe.todo("UsersContainer component", () => {
+describe("UsersContainer component", () => {
     beforeEach(() => {
         configure({testIdAttribute: "id"});
         fetchMock.mockGlobal();
         fetchMock.postOnce("/api/rest/time", "message");
         dotenv.config({path: ".env"});
+        Jwt.setToken("token");
     });
     afterEach(() => {
         fetchMock.hardReset();

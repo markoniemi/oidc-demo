@@ -7,8 +7,20 @@ import UsersPage from "../pages/UsersPage";
 import {user1, user2, users} from "../users";
 import EditUserPage from "../pages/EditUserPage";
 import {sleep} from "../time";
-import {afterEach, beforeEach, describe, test} from "vitest";
+import {afterEach, beforeEach, describe, test, vi} from "vitest";
 import Role from "../../src/domain/Role.ts";
+import Jwt from "../../src/api/Jwt.ts";
+
+export const navigate = vi.fn();
+vi.mock("react-router", async () => {
+    const mod = await vi.importActual<typeof import("react-router")>(
+        "react-router"
+    );
+    return {
+        ...mod,
+        useNavigate: () => navigate,
+    };
+});
 
 describe.todo("App component", () => {
     beforeEach(() => {
@@ -18,6 +30,7 @@ describe.todo("App component", () => {
     });
     afterEach(() => {
         fetchMock.hardReset();
+        Jwt.clearToken();
     });
     test("shows login page", async () => {
         await LoginPage.render();

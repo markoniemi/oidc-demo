@@ -8,6 +8,7 @@ import {setLocation} from "../RouterMock";
 import LoginPage from "../pages/LoginPage";
 import {afterEach, assert, beforeEach, describe, expect, test, vi} from "vitest";
 import Role from "../../src/domain/Role.ts";
+import Jwt from "../../src/api/Jwt.ts";
 
 export const navigate = vi.fn();
 vi.mock("react-router", async () => {
@@ -20,14 +21,16 @@ vi.mock("react-router", async () => {
     };
 });
 
-describe.todo("EditUser component", () => {
+describe("EditUser component", () => {
     beforeEach(() => {
         configure({testIdAttribute: "id"});
         dotenv.config({path: ".env"});
         fetchMock.mockGlobal();
+        Jwt.setToken("token");
     });
     afterEach(() => {
         fetchMock.hardReset();
+        Jwt.clearToken();
     });
     test("renders a user", async () => {
         fetchMock.getOnce("/api/rest/users/1", user1);
