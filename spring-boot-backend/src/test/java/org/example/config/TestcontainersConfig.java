@@ -1,8 +1,6 @@
 package org.example.config;
 
-import java.util.Arrays;
-import java.util.List;
-
+import org.springframework.boot.devtools.restart.RestartScope;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
@@ -18,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TestcontainersConfig {
   @Bean
+  @RestartScope
   KeycloakContainer keycloakContainer() {
     KeycloakContainer keycloak =
         new KeycloakContainer("quay.io/keycloak/keycloak:26.4")
