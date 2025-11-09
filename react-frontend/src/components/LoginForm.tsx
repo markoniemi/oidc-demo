@@ -65,7 +65,7 @@ class LoginForm extends React.Component<LoginProps, ILoginState> {
                     <Col md={{ span: 10, offset: 4 }}>
                         <Card.Body>
                             <Button
-                                id="login.google"
+                                id="login.oauth"
                                 size="sm"
                                 className="pull-right"
                                 onClick={() => void this.props.auth.signinRedirect()}
