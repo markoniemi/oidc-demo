@@ -1,6 +1,5 @@
 package org.example;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -9,19 +8,30 @@ import io.restassured.response.Response;
 
 @Component
 public class OAuthTokenHelper {
-  @Value("${spring.security.oauth2.client.provider.keycloak.token-uri}")
   private String tokenUri;
+  private String clientId;
+  private String clientSecret;
+  private String authorizationGrantType;
 
-  @Autowired OAuthConfig config;
+  public OAuthTokenHelper(
+      @Value("${spring.oauth.token-uri}") String tokenUri,
+      @Value("${spring.oauth.client-id}") String clientId,
+      @Value("${spring.oauth.client-secret}") String clientSecret,
+      @Value("${spring.oauth.authorization-grant-type}") String authorizationGrantType) {
+    this.tokenUri = tokenUri;
+    this.clientId = clientId;
+    this.clientSecret = clientSecret;
+    this.authorizationGrantType = authorizationGrantType;
+  }
 
   public String getAccessToken() {
     Response response =
         RestAssured.given()
             .baseUri(tokenUri)
             .header("Content-Type", "application/x-www-form-urlencoded")
-            .formParam("client_id", config.getClientId())
-            .formParam("client_secret", config.getClientSecret())
-            .formParam("grant_type", config.getAuthorizationGrantType())
+            .formParam("client_id", clientId)
+            .formParam("client_secret", clientSecret)
+            .formParam("grant_type", authorizationGrantType)
             .post()
             .then()
             .statusCode(200)
