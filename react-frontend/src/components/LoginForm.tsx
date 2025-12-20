@@ -71,7 +71,7 @@ class LoginForm extends React.Component<LoginProps, ILoginState> {
                                 onClick={() => void this.props.auth.signinRedirect()}
                             >
                                 <FontAwesomeIcon icon={Icons.faRightToBracket} />
-                                <FormattedMessage id="login.google" />
+                                <FormattedMessage id="login.oauth" />
                             </Button>
                         </Card.Body>
                     </Col>
