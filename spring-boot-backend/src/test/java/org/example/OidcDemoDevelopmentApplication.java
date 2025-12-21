@@ -1,5 +1,4 @@
 package org.example;
-import org.example.OidcDemoApplication;
 import org.example.config.ApplicationConfig;
 import org.example.config.TestcontainersConfig;
 import org.springframework.boot.SpringApplication;

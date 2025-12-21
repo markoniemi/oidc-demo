@@ -14,10 +14,12 @@ public class UsersPage extends AbstractPage {
 
   public void clickAddUser() {
     click(By.id("addUser"));
+    sleep(500);
   }
 
   public void clickEditUser(String username) {
     click(By.xpath("//button[@id='edit." + username + "']"));
+    sleep(500);
   }
 
   public void deleteUser(String username) {

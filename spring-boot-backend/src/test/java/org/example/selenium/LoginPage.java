@@ -12,6 +12,13 @@ public class LoginPage extends AbstractPage {
     setText(By.id("username"), username);
     setText(By.id("password"), password);
     click(By.id("login"));
-    //        assertTitle("Users");
+  }
+
+  public void oauthLogin(String username, String password) {
+    click(By.id("login.oauth"));
+    sleep(500);
+    setText(By.id("username"), username);
+    setText(By.id("password"), password);
+    click(By.id("kc-login"));
   }
 }
