@@ -21,7 +21,16 @@ export default class OidcService {
     }
 }
 // TODO move this inside class
-// https://console.cloud.google.com/apis/credentials?project=oidc-demo-426909
+// export const oidcConfig: OidcClientSettings = {
+//     authority: "http://localhost:9000",
+//     client_id: "oidc-test",
+//     redirect_uri: `http://localhost:${process.env.PORT}`,
+//     client_secret: "secret",
+//     response_type: "code",
+//    client_authentication: "client_secret_basic",
+//    //  disablePKCE: false,
+//     scope: "openid profile email",
+// };
 export const oidcConfig: OidcClientSettings = {
     authority: "http://localhost:9090/realms/oidc-demo",
     client_id: "oidc-test",
