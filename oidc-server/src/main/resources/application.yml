@@ -14,9 +14,9 @@ spring:
       authorizationserver:
 #        issuer: http://localhost:9000
         client:
-          oidc-client:
+          oidc-test:
             registration:
-              client-id: oidc-client
+              client-id: oidc-test
               client-secret: "{noop}secret"
               client-authentication-methods:
 #                - none
@@ -36,6 +36,6 @@ spring:
                 - openid
                 - profile
                 - email
-#            require-authorization-consent: true
+            require-authorization-consent: false
 #            require-proof-key: true
             
