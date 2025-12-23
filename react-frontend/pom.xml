@@ -46,6 +46,9 @@
             <phase>compile</phase>
             <configuration>
               <arguments>run build</arguments>
+              <environmentVariables>
+                <PORT>8080</PORT>
+              </environmentVariables>
             </configuration>
           </execution>
           <execution>

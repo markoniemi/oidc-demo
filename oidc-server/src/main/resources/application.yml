@@ -1,5 +1,7 @@
 server:
-  port: 9000
+  port: 9090
+  servlet:
+    context-path: /realms/oidc-demo
 
 logging:
   level:
@@ -12,25 +14,23 @@ spring:
       password: admin
     oauth2:
       authorizationserver:
-#        issuer: http://localhost:9000
+#        issuer: http://localhost:9090/realms/oidc-demo
         client:
           oidc-test:
             registration:
               client-id: oidc-test
-              client-secret: "{noop}secret"
+              client-secret: "{noop}Uq8odAqLX59MuZfNXRwgSRPA3w4qz5TW"
               client-authentication-methods:
-#                - none
-#                - client_secret_post
                 - client_secret_basic
               authorization-grant-types:
                 - authorization_code
                 - client_credentials
                 - refresh_token
               redirect-uris:
-#                - http://localhost:8080
+                - http://localhost:8080
                 - http://localhost:8081
               post-logout-redirect-uris:
-#                - http://localhost:8080
+                - http://localhost:8080
                 - http://localhost:8081
               scopes:
                 - openid

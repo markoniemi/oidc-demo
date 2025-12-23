@@ -62,25 +62,19 @@
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
-        <version>3.4.0</version>
+        <version>3.5.1</version>
         <configuration>
-          <skip>true</skip>
+<!--          <skip>true</skip>-->
           <from>
-            <image>gcr.io/distroless/java:8</image>
+            <image>gcr.io/distroless/java17-debian12</image>
           </from>
           <to>
             <image>${docker.image.prefix}/${project.artifactId}</image>
           </to>
           <container>
             <ports>
-              <port>8082</port>
-              <port>8582</port>
+              <port>9090</port>
             </ports>
-            <environment>
-              <DB_HOST>postgresql</DB_HOST>
-              <DB_PASSWORD>mysecretpassword</DB_PASSWORD>
-              <PORT>8082</PORT>
-            </environment>
           </container>
         </configuration>
         <executions>
@@ -88,7 +82,7 @@
             <id>package</id>
             <phase>package</phase>
             <goals>
-              <goal>buildTar</goal>
+              <goal>dockerBuild</goal>
             </goals>
           </execution>
         </executions>

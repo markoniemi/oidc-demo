@@ -69,6 +69,7 @@ public class DefaultSecurityConfig {
     config.addAllowedHeader("*");
     config.addAllowedMethod("*");
     config.addAllowedOrigin("http://localhost:8081");
+    config.addAllowedOrigin("http://localhost:8080");
     config.setAllowCredentials(true);
     source.registerCorsConfiguration("/**", config);
     return source;
