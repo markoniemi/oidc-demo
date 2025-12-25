@@ -19,6 +19,6 @@ public class LoginPage extends AbstractPage {
     sleep(500);
     setText(By.id("username"), username);
     setText(By.id("password"), password);
-    click(By.id("kc-login"));
+    click(By.className("primary"));
   }
 }

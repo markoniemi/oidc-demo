@@ -37,7 +37,7 @@ public class DefaultSecurityConfig {
   SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
     OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
     http.getConfigurer(OAuth2AuthorizationServerConfigurer.class).oidc(withDefaults());
-    return http.formLogin(withDefaults()).cors(withDefaults()).build();
+    return http.formLogin(withDefaults()).cors(withDefaults()).csrf().disable().build();
   }
 
   @Bean
@@ -46,6 +46,7 @@ public class DefaultSecurityConfig {
     return http.cors(withDefaults())
         .authorizeHttpRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())
         .formLogin(withDefaults())
+        .csrf().disable()
         .build();
   }
 

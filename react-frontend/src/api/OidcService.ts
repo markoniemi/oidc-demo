@@ -22,7 +22,7 @@ export default class OidcService {
 }
 // TODO move this inside class
 export const oidcConfig: OidcClientSettings = {
-    authority: "http://localhost:9090/realms/oidc-demo",
+    authority: "http://localhost:9090/",
     client_id: "oidc-test",
     redirect_uri: `http://localhost:${process.env.PORT}`,
     client_authentication: "client_secret_basic",

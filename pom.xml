@@ -9,6 +9,7 @@
 	<name>oidc-demo</name>
 	<packaging>pom</packaging>
 	<modules>
+		<module>oidc-server</module>
 		<module>react-frontend</module>
 		<module>spring-boot-backend</module>
 	</modules>

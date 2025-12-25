@@ -5,8 +5,10 @@ import org.springframework.stereotype.Component;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
+@Slf4j
 public class OAuthTokenHelper {
   private String tokenUri;
   private String clientId;
@@ -32,12 +34,9 @@ public class OAuthTokenHelper {
             .formParam("client_id", clientId)
             .formParam("client_secret", clientSecret)
             .formParam("grant_type", authorizationGrantType)
+            .formParam("authentication_method", "client_secret_post")
             .post()
             .then()
-            .statusCode(200)
-            .log()
-            .ifError()
-            .and()
             .extract()
             .response();
     return response.jsonPath().getString("access_token");

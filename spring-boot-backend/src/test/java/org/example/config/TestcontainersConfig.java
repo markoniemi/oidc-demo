@@ -25,7 +25,7 @@ public class TestcontainersConfig {
             .withExposedPorts(9090)
             .withLogConsumer(new Slf4jLogConsumer(log))
             .withCreateContainerCmdModifier(cmd -> cmd.withHostConfig(createPortBindings()));
-    authorizationServer.waitingFor(Wait.forHttp("/realms/oidc-demo"));
+    authorizationServer.waitingFor(Wait.forHttp("/"));
     authorizationServer.start();
     return authorizationServer;
   }
