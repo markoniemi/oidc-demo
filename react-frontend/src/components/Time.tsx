@@ -1,40 +1,27 @@
 import * as React from "react";
+import { useEffect } from "react";
 import TimeServiceImpl from "../api/TimeServiceImpl";
-import {Button} from "react-bootstrap";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { Button } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as Icons from "@fortawesome/free-solid-svg-icons";
-import type {Empty} from "../domain/Empty";
+import { useIsMounted } from "usehooks-ts";
 
-export interface TimeState {
-    message: string;
-}
-
-export default class Time extends React.Component<Empty, TimeState> {
-    private helloService = new TimeServiceImpl();
-
-    constructor(props: Empty) {
-        super(props);
-        this.state = {message: ""};
-        this.fetchMessage = this.fetchMessage.bind(this);
-    }
-
-    public override componentDidMount(): void {
-        this.fetchMessage();
-    }
-
-    public async fetchMessage(): Promise<void> {
-        const message = await this.helloService.getTime();
-        this.setState({message: message});
-    }
-
-    public override render(): React.ReactNode {
-        return (
-            <>
-                <Button id="fetchMessage" size="sm" onClick={this.fetchMessage}>
-                    <FontAwesomeIcon icon={Icons.faClock}/>
-                </Button>
-                <span id="message">{this.state.message}</span>
-            </>
-        );
-    }
+export default function Time() {
+    const helloService = new TimeServiceImpl();
+    const [message, setMessage] = React.useState<string>("");
+    const isMounted = useIsMounted();
+    const fetchMessage = async () => {
+        setMessage(await helloService.getTime());
+    };
+    useEffect(() => {
+        fetchMessage();
+    }, [isMounted]);
+    return (
+        <>
+            <Button id="fetchMessage" size="sm" onClick={fetchMessage}>
+                <FontAwesomeIcon icon={Icons.faClock} />
+            </Button>
+            <span id="message">{message}</span>
+        </>
+    );
 }

@@ -1,56 +1,25 @@
 import * as React from "react";
-import {Alert, Toast, ToastBody, ToastHeader} from "react-bootstrap";
-import {FormattedMessage} from "react-intl";
-import Message, {MessageType, type MessageVariant} from "../domain/Message";
+import { useState } from "react";
+import { Alert, Toast, ToastBody, ToastHeader } from "react-bootstrap";
+import { FormattedMessage } from "react-intl";
+import Message, { MessageType, type MessageVariant } from "../domain/Message";
 
 export interface MessageProps {
     messages?: ReadonlyArray<Message>;
 }
 
-export interface MessageState {
-    show: boolean;
-}
+export default function Messages(props: MessageProps) {
+    const [show, setShow] = useState(true);
 
-export class Messages extends React.Component<MessageProps, MessageState> {
-    // private static readonly debug: Debug.IDebugger = Debug("Messages");
-
-    constructor(props: MessageProps) {
-        super(props);
-        this.onClose = this.onClose.bind(this);
-        this.state = {show: true};
-    }
-
-    public override render(): React.ReactNode {
-        if (this.props.messages != null && this.props.messages.length > 0) {
-            return (
-                <Toast
-                    onClose={this.onClose}
-                    show={this.state.show}
-                    id="messages"
-                    style={{
-                        position: "absolute",
-                        top: 0,
-                        right: 0,
-                    }}
-                >
-                    <ToastHeader/>
-                    <ToastBody>{this.props.messages.map(this.renderMessage)}</ToastBody>
-                </Toast>
-            );
-        } else {
-            return null;
-        }
-    }
-
-    private renderMessage(message: Message): React.ReactNode {
+    const renderMessage = (message: Message): React.ReactNode => {
         return (
-            <Alert variant={Messages.mapTypeToStyle(message.type)} key={message.text}>
-                <FormattedMessage id={message.text} defaultMessage={message.text}/>
+            <Alert variant={mapTypeToStyle(message.type)} key={message.text}>
+                <FormattedMessage id={message.text} defaultMessage={message.text} />
             </Alert>
         );
-    }
+    };
 
-    private static mapTypeToStyle(type: MessageType | undefined): MessageVariant {
+    const mapTypeToStyle = (type: MessageType | undefined): MessageVariant => {
         if (type === MessageType.ERROR) {
             return "danger";
         }
@@ -61,11 +30,29 @@ export class Messages extends React.Component<MessageProps, MessageState> {
             return "success";
         }
         return "info";
-    }
+    };
 
-    private onClose() {
-        this.setState({show: false});
+    const onClose = () => {
+        setShow(false);
+    };
+
+    if (props.messages?.length) {
+        return (
+            <Toast
+                onClose={onClose}
+                show={show}
+                id="messages"
+                style={{
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                }}
+            >
+                <ToastHeader />
+                <ToastBody>{props.messages.map(renderMessage)}</ToastBody>
+            </Toast>
+        );
+    } else {
+        return null;
     }
 }
-
-export default Messages;

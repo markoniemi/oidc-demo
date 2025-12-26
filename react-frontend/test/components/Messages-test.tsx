@@ -1,4 +1,4 @@
-import {Messages} from "../../src/components/Messages";
+import Messages from "../../src/components/Messages";
 import {messages} from "../messages";
 import {configure, render, screen} from "@testing-library/react";
 import i18nConfig from "../../src/messages/messages";
