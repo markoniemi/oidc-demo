@@ -22,7 +22,7 @@ describe("Time component", () => {
         });
         await sleep(100);
         assert.equal((await screen.findByTestId("message")).textContent, "response");
-    },20000);
+    });
     test("updates text after button press", async () => {
         fetchMock.postOnce("/api/rest/time", "response1");
         fetchMock.postOnce("/api/rest/time", "response2");
@@ -36,5 +36,5 @@ describe("Time component", () => {
             await sleep(100);
         });
         assert.equal((await screen.findByTestId("message")).textContent, "response2");
-    }, 20000);
+    });
 });

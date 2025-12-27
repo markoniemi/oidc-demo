@@ -9,9 +9,9 @@ import Jwt from "../api/Jwt";
 import Message, { MessageType } from "../domain/Message";
 import { Form as FormikForm, Formik, type FormikProps } from "formik";
 import * as Yup from "yup";
-import {InputField} from "./InputField";
-import { type AuthContextProps, withAuth } from "react-oidc-context";
-import withRouter, {type WithRouter} from "./withRouter";
+import { InputField } from "./InputField";
+import { useAuth, type AuthContextProps } from "react-oidc-context";
+import { useNavigate, type NavigateFunction } from "react-router";
 
 export interface ILoginForm {
     username: string;
@@ -22,65 +22,17 @@ export interface ILoginState extends ILoginForm {
     messages?: ReadonlyArray<Message>;
 }
 
-export interface LoginProps extends WithRouter {
-    auth: AuthContextProps;
-}
-
-class LoginForm extends React.Component<LoginProps, ILoginState> {
-    private schema = Yup.object().shape({
+export default function LoginForm() {
+    const [messages, setMessages] = React.useState<ReadonlyArray<Message>>();
+    const [form, setForm] = React.useState<ILoginForm>({ username: "", password: "" });
+    const schema = Yup.object().shape({
         username: Yup.string().required("username.required"),
         password: Yup.string().required("password.required"),
     });
+    const auth: AuthContextProps = useAuth();
+    const navigate: NavigateFunction = useNavigate();
 
-    constructor(props: LoginProps) {
-        super(props);
-        this.onSubmit = this.onSubmit.bind(this);
-        this.login = this.login.bind(this);
-        this.renderForm = this.renderForm.bind(this);
-        this.state = { username: "", password: "" };
-    }
-
-    public render(): React.ReactNode {
-        return (
-            <Card id="LoginForm">
-                <Row>
-                    <Col md={{ span: 10, offset: 4 }}>
-                        <Card.Body>
-                            <Card.Title>
-                                <FormattedMessage id="login" />
-                            </Card.Title>
-                            <Messages messages={this.state.messages} />
-                            <Formik
-                                initialValues={this.state}
-                                onSubmit={this.onSubmit}
-                                enableReinitialize={true}
-                                validationSchema={this.schema}
-                            >
-                                {this.renderForm}
-                            </Formik>
-                        </Card.Body>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col md={{ span: 10, offset: 4 }}>
-                        <Card.Body>
-                            <Button
-                                id="login.oauth"
-                                size="sm"
-                                className="pull-right"
-                                onClick={() => void this.props.auth.signinRedirect()}
-                            >
-                                <FontAwesomeIcon icon={Icons.faRightToBracket} />
-                                <FormattedMessage id="login.oauth" />
-                            </Button>
-                        </Card.Body>
-                    </Col>
-                </Row>
-            </Card>
-        );
-    }
-
-    private renderForm(form: FormikProps<ILoginForm>): React.ReactNode {
+    const renderForm = (form: FormikProps<ILoginForm>): React.ReactNode => {
         return (
             <FormikForm>
                 <Form.Group>
@@ -94,24 +46,59 @@ class LoginForm extends React.Component<LoginProps, ILoginState> {
                 </Form.Group>
             </FormikForm>
         );
-    }
+    };
 
-    public async onSubmit(values: ILoginForm) {
-        this.setState({ ...values });
-        await this.login({ ...values });
-    }
+    const onSubmit = async (values: ILoginForm): Promise<void> => {
+        setForm({ ...values });
+        await login({ ...values });
+    };
 
-    private async login(loginForm: ILoginForm): Promise<void> {
+    const login = async (loginForm: ILoginForm): Promise<void> => {
         try {
             const token = await LoginService.login(loginForm);
             Jwt.setToken(token);
             window.location.assign("/users");
-            this.props.router.navigate("/users");
-        } catch (error) {
-            // @ts-ignore
-            this.setState({ messages: [{ text: error.message, type: MessageType.ERROR }] });
+            navigate("/users");
+        } catch (error: any) {
+            setMessages([{ text: error.message, type: MessageType.ERROR }]);
         }
-    }
-}
+    };
 
-export default withAuth(withRouter(LoginForm));
+    return (
+        <Card id="LoginForm">
+            <Row>
+                <Col md={{ span: 10, offset: 4 }}>
+                    <Card.Body>
+                        <Card.Title>
+                            <FormattedMessage id="login" />
+                        </Card.Title>
+                        <Messages messages={messages} />
+                        <Formik
+                            initialValues={form}
+                            onSubmit={onSubmit}
+                            enableReinitialize={true}
+                            validationSchema={schema}
+                        >
+                            {renderForm}
+                        </Formik>
+                    </Card.Body>
+                </Col>
+            </Row>
+            <Row>
+                <Col md={{ span: 10, offset: 4 }}>
+                    <Card.Body>
+                        <Button
+                            id="login.oauth"
+                            size="sm"
+                            className="pull-right"
+                            onClick={() => void auth.signinRedirect()}
+                        >
+                            <FontAwesomeIcon icon={Icons.faRightToBracket} />
+                            <FormattedMessage id="login.oauth" />
+                        </Button>
+                    </Card.Body>
+                </Col>
+            </Row>
+        </Card>
+    );
+}
