@@ -7,7 +7,7 @@ import * as Icons from "@fortawesome/free-solid-svg-icons";
 
 export interface UserProps {
     user: User;
-    deleteUser(id: number | undefined): void;
+    deleteUser?(id: number | undefined): void;
 }
 
 export default function UserRow(props: UserProps) {
@@ -16,7 +16,9 @@ export default function UserRow(props: UserProps) {
 
     const deleteUser = (): void => {
         const { id } = user;
-        props.deleteUser(id);
+        if (props.deleteUser) {
+            props.deleteUser(id);
+        }
     };
 
     const editUser = (): void => {

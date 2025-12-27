@@ -16,13 +16,13 @@ describe("UserRow component", () => {
         dotenv.config({path: ".env"});
     });
     test("renders a user", async () => {
-        await renderUserRow(user1, null);
+        await renderUserRow(user1, undefined);
         assert.equal((await screen.findByTestId("username")).textContent, "user1");
         assert.equal((await screen.findByTestId("email")).textContent, "email1");
     });
     test("creates no error with empty user", async () => {
         const emptyUser = new User("");
-        await renderUserRow(emptyUser, null);
+        await renderUserRow(emptyUser, undefined);
         assert.equal((await screen.findByTestId("username")).textContent, "");
         assert.equal((await screen.findByTestId("email")).textContent, "");
     });
@@ -36,7 +36,7 @@ describe("UserRow component", () => {
     });
 });
 
-async function renderUserRow(user: User, deleteUser: ((id: number) => void) | null): Promise<void> {
+async function renderUserRow(user: User, deleteUser: ((id: number|undefined) => void )|undefined): Promise<void> {
     await act(async () => {
         render(
             <Table>
