@@ -9,5 +9,5 @@ export default interface UserService {
 
     update(editedUser: User): Promise<User>;
 
-    delete(id: number): Promise<void>;
+    delete(id: number|undefined): Promise<void>;
 }

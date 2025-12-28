@@ -15,15 +15,13 @@ export default function UserRow(props: UserProps) {
     const user: User = props.user;
 
     const deleteUser = (): void => {
-        const { id } = user;
         if (props.deleteUser) {
-            props.deleteUser(id);
+            props.deleteUser(user.id);
         }
     };
 
     const editUser = (): void => {
-        const { id } = user;
-        navigate("/users/" + id);
+        navigate("/users/" + user.id);
     };
 
     return (

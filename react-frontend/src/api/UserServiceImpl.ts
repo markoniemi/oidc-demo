@@ -32,7 +32,10 @@ export default class UserServiceImpl implements UserService {
         }
     }
 
-    public async delete(id: number): Promise<void> {
+    public async delete(id: number|undefined): Promise<void> {
+        if (id === undefined) {
+            return;
+        }
         const response: Response = await Http.delete(this.url + id);
         if (!response.ok) {
             throw new Error("error.delete.user");
