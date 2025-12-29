@@ -18,10 +18,6 @@ export interface ILoginForm {
     password: string;
 }
 
-export interface ILoginState extends ILoginForm {
-    messages?: ReadonlyArray<Message>;
-}
-
 export default function LoginForm() {
     const [messages, setMessages] = React.useState<ReadonlyArray<Message>>();
     const [form, setForm] = React.useState<ILoginForm>({ username: "", password: "" });
