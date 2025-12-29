@@ -53,7 +53,6 @@ export default function LoginForm() {
         try {
             const token = await LoginService.login(loginForm);
             Jwt.setToken(token);
-            window.location.assign("/users");
             navigate("/users");
         } catch (error: any) {
             setMessages([{ text: error.message, type: MessageType.ERROR }]);
