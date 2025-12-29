@@ -1,4 +1,5 @@
 import * as React from "react";
+import {useEffect} from "react";
 import User from "../domain/User";
 import type UserService from "../api/UserService";
 import UserServiceImpl from "../api/UserServiceImpl";
@@ -10,73 +11,71 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import * as Icons from "@fortawesome/free-solid-svg-icons";
 import {Form as FormikForm, Formik, type FormikProps} from "formik";
 import * as Yup from "yup";
-import withRouter, {type WithRouter} from "./withRouter";
 import {InputField} from "./InputField.tsx";
+import {useIsMounted} from "usehooks-ts";
+import {type NavigateFunction, useNavigate, useParams} from "react-router";
 
-export interface RouteParam extends WithRouter {
-    id: string;
-}
+export default function EditUser() {
+    const userService: UserService = new UserServiceImpl();
+    const [messages, setMessages] = React.useState<ReadonlyArray<Message>>();
+    const [user, setUser] = React.useState<User>({username:"",password:"", email:"", role: undefined});
+    const navigate: NavigateFunction = useNavigate();
+    const params = useParams();
+    const isMounted = useIsMounted();
 
-export interface EditUserState {
-    user: User;
-    messages?: ReadonlyArray<Message>;
-}
+    useEffect(() => {
+        fetchUser();
+    }, [isMounted]);
 
-class EditUser extends React.Component<RouteParam, EditUserState> {
-    private userService: UserService = new UserServiceImpl();
-    private schema = Yup.object().shape({
+
+    const schema = Yup.object().shape({
         username: Yup.string().required("username.required"),
         email: Yup.string().required("email.required"),
         password: Yup.string().required("password.required"),
         role: Yup.string().required("role.required"),
     });
 
-    constructor(props: RouteParam) {
-        super(props);
-        this.submitUser = this.submitUser.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
-        this.onCancel = this.onCancel.bind(this);
-        this.renderForm = this.renderForm.bind(this);
-        this.state = {user: new User("", "", "")};
-    }
-
-    public override async componentDidMount(): Promise<void> {
-        const id = Number(this.props.router.params.id);
+    const fetchUser = async (): Promise<void> => {
+        const id = Number(params.id);
         if (id) {
             try {
-                this.setState({user: await this.userService.findById(id)});
+                setUser(await userService.findById(id));
             } catch (error: unknown) {
                 if (error instanceof Error) {
-                    this.setState({messages: [{text: error.message, type: MessageType.ERROR}]});
+                    setMessages([{text: error.message, type: MessageType.ERROR}]);
                 }
             }
         }
     }
 
-    public override render(): React.ReactNode {
-        return (
-            <Card id="EditUser">
-                <Card.Body>
-                    <Card.Title>
-                        <FormattedMessage id="user"/>
-                    </Card.Title>
-                    <Formik
-                        initialValues={this.state.user}
-                        onSubmit={this.onSubmit}
-                        enableReinitialize={true}
-                        validationSchema={this.schema}
-                    >
-                        {this.renderForm}
-                    </Formik>
-                </Card.Body>
-            </Card>
-        );
+    const onSubmit = async (user: User) => {
+        setUser(user);
+        await submitUser(user);
     }
 
-    private renderForm(form: FormikProps<User>): React.ReactNode {
+    const onCancel = async () => {
+        navigate("/users");
+    }
+
+    const submitUser = async (user: User): Promise<void> => {
+        try {
+            if (user.id == undefined) {
+                await userService.create(user);
+            } else {
+                await userService.update(user);
+            }
+            navigate("/users");
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                setMessages([{text: error.message, type: MessageType.ERROR}]);
+            }
+        }
+    }
+
+    const renderForm = (form: FormikProps<User>): React.ReactNode => {
         return (
             <FormikForm>
-                <Messages messages={this.state.messages}/>
+                <Messages messages={messages}/>
                 <Form.Group>
                     <InputField
                         name="id"
@@ -100,7 +99,7 @@ class EditUser extends React.Component<RouteParam, EditUserState> {
                             <Button type="submit" id="saveUser" size="sm" className="pull-right">
                                 <FontAwesomeIcon icon={Icons.faCheckSquare}/>
                             </Button>
-                            <Button id="cancel" size="sm" className="pull-right" onClick={this.onCancel}>
+                            <Button id="cancel" size="sm" className="pull-right" onClick={onCancel}>
                                 <FontAwesomeIcon icon={Icons.faCancel}/>
                             </Button>
                         </Col>
@@ -110,29 +109,21 @@ class EditUser extends React.Component<RouteParam, EditUserState> {
         );
     }
 
-    public async onSubmit(values: User) {
-        this.setState({user: values});
-        await this.submitUser(values);
-    }
-
-    public async onCancel() {
-        this.props.router.navigate("/users");
-    }
-
-    private async submitUser(user: User): Promise<void> {
-        try {
-            if (user.id == undefined) {
-                await this.userService.create(user);
-            } else {
-                await this.userService.update(user);
-            }
-            this.props.router.navigate("/users");
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                this.setState({messages: [{text: error.message, type: MessageType.ERROR}]});
-            }
-        }
-    }
+    return (
+        <Card id="EditUser">
+            <Card.Body>
+                <Card.Title>
+                    <FormattedMessage id="user"/>
+                </Card.Title>
+                <Formik
+                    initialValues={user}
+                    onSubmit={onSubmit}
+                    enableReinitialize={true}
+                    validationSchema={schema}
+                >
+                    {renderForm}
+                </Formik>
+            </Card.Body>
+        </Card>
+    );
 }
-
-export default withRouter(EditUser);
