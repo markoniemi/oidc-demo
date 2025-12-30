@@ -1,3 +1,7 @@
 {
   "extends": "@tsconfig/vite-react/tsconfig.json",
+  "compilerOptions": {
+    // enable enums
+    "erasableSyntaxOnly": false
+  }
 }

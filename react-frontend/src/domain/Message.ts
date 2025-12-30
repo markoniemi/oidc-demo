@@ -1,4 +1,3 @@
-// @ts-ignore
 export enum MessageType {
     INFO = "INFO",
     WARN = "WARN",
