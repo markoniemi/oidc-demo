@@ -18,12 +18,12 @@ describe("UserService", () => {
     });
     test("fetchUsers", async () => {
         fetchMock.getOnce("/api/rest/users/", users);
-        const fetchedUsers = await userService.fetchUsers();
+        const fetchedUsers = await userService.findAll();
         assert.equal(fetchedUsers.length, 2);
     });
-    test("fetchUsers fails", async () => {
+    test("findAll fails", async () => {
         fetchMock.getOnce("/api/rest/users/", 401);
-        await expect(userService.fetchUsers()).rejects.toThrow();
+        await expect(userService.findAll()).rejects.toThrow();
     });
     test("findById", async () => {
         fetchMock.getOnce("/api/rest/users/1", user1);

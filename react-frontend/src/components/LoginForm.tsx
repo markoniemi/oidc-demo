@@ -2,7 +2,7 @@ import * as React from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
 import Messages from "./Messages";
-import LoginService from "../api/LoginService";
+import LoginServiceImpl from "../api/LoginServiceImpl.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as Icons from "@fortawesome/free-solid-svg-icons";
 import Jwt from "../api/Jwt";
@@ -19,6 +19,7 @@ export interface ILoginForm {
 }
 
 export default function LoginForm() {
+    const loginService = new LoginServiceImpl();
     const [messages, setMessages] = React.useState<ReadonlyArray<Message>>();
     const [form, setForm] = React.useState<ILoginForm>({ username: "", password: "" });
     const schema = Yup.object().shape({
@@ -51,7 +52,7 @@ export default function LoginForm() {
 
     const login = async (loginForm: ILoginForm): Promise<void> => {
         try {
-            const token = await LoginService.login(loginForm);
+            const token = await loginService.login(loginForm);
             Jwt.setToken(token);
             window.location.assign("/users");
             navigate("/users");

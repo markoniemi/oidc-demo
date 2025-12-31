@@ -10,7 +10,7 @@ import Message, {MessageType} from "../domain/Message";
 import Messages from "./Messages";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import * as Icons from "@fortawesome/free-solid-svg-icons";
-import LoginService from "../api/LoginService";
+import LoginServiceImpl from "../api/LoginServiceImpl.ts";
 import Time from "./Time";
 import {type AuthContextProps, useAuth} from "react-oidc-context";
 import {useIsMounted} from "usehooks-ts";
@@ -22,6 +22,7 @@ export interface UsersContainerState {
 }
 
 export default function UsersContainer() {
+    const loginService = new LoginServiceImpl();
     const userService: UserService = new UserServiceImpl();
     const [messages, setMessages] = React.useState<ReadonlyArray<Message>>();
     const [users, setUsers] = React.useState<User[]>();
@@ -30,7 +31,7 @@ export default function UsersContainer() {
     const isMounted = useIsMounted();
     const fetchUsers = async () => {
         try {
-            setUsers(await userService.fetchUsers());
+            setUsers(await userService.findAll());
         } catch (error: unknown) {
             if (error instanceof Error) {
                 setMessages([{text: error.message, type: MessageType.ERROR}]);
@@ -54,12 +55,12 @@ export default function UsersContainer() {
                     setMessages([{text: error.message, type: MessageType.ERROR}]);
                 }
             }
-            await userService.fetchUsers();
+            await userService.findAll();
         }
     }
 
     const logout = async () => {
-        await LoginService.logout();
+        await loginService.logout();
         auth.removeUser();
         navigate("/");
     }
