@@ -1,5 +1,5 @@
 import {AuthProvider} from "react-oidc-context";
-import {oidcConfig} from "../api/OidcService";
+import OidcService from "../api/OidcService";
 import Content from "./Content";
 
 export default function App() {
@@ -8,7 +8,7 @@ export default function App() {
     }
 
     return (
-        <AuthProvider {...oidcConfig} onSigninCallback={onSigninCallback}>
+        <AuthProvider {...OidcService.oidcConfig} onSigninCallback={onSigninCallback}>
             <Content/>
         </AuthProvider>
     );
