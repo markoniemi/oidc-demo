@@ -1,6 +1,6 @@
 import {sleep} from "../time";
 import {act, fireEvent, render, screen} from "@testing-library/react";
-import {oidcConfig} from "../../src/api/OidcService";
+import OidcService from "../../src/api/OidcService";
 import {AuthProvider} from "react-oidc-context";
 import Content from "../../src/components/Content.tsx";
 
@@ -8,7 +8,7 @@ export default class AbstractPage {
     public static async render(): Promise<void> {
         await act(async () => {
             await render(
-                <AuthProvider {...oidcConfig} onSigninCallback={onSigninCallback}>
+                <AuthProvider {...OidcService.oidcConfig} onSigninCallback={onSigninCallback}>
                     <Content/>
                 </AuthProvider>,
             );
