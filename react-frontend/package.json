@@ -13,6 +13,7 @@
     "npm": "11.6.2"
   },
   "dependencies": {
+    "@eslint/js": "9.39.2",
     "@fortawesome/fontawesome-svg-core": "6.7.2",
     "@fortawesome/free-solid-svg-icons": "6.7.2",
     "@fortawesome/react-fontawesome": "0.2.2",
@@ -27,6 +28,7 @@
     "react-intl": "7.1.11",
     "react-oidc-context": "3.1.0",
     "react-router": "7.6.2",
+    "typescript-eslint": "8.51.0",
     "usehooks-ts": "3.1.1",
     "yup": "1.6.1"
   },
