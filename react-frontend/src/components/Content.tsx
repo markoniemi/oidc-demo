@@ -6,9 +6,11 @@ import {IntlProvider} from "react-intl";
 import i18nConfig from "../messages/messages";
 import LoginForm from "./LoginForm";
 import Jwt from "../api/Jwt";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export default function Content() {
     const auth = useAuth();
+    const queryClient = new QueryClient();
     if (auth.isAuthenticated || Jwt.isAuthenticated()) {
         return (
             <IntlProvider locale={i18nConfig.locale} messages={i18nConfig.messages}>
@@ -30,6 +32,7 @@ export default function Content() {
         return <div>Error: {auth.error.message}</div>;
     }
     return (
+        <QueryClientProvider client={queryClient}>
         <IntlProvider locale={i18nConfig.locale} messages={i18nConfig.messages}>
             <BrowserRouter>
                 <Routes>
@@ -38,5 +41,6 @@ export default function Content() {
                 </Routes>
             </BrowserRouter>
         </IntlProvider>
+        </QueryClientProvider>
     );
 }

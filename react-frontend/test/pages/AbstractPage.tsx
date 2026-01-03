@@ -3,14 +3,19 @@ import {act, fireEvent, render, screen} from "@testing-library/react";
 import OidcService from "../../src/api/OidcService";
 import {AuthProvider} from "react-oidc-context";
 import Content from "../../src/components/Content.tsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export default class AbstractPage {
     public static async render(): Promise<void> {
+        const queryClient = new QueryClient();
+
         await act(async () => {
             await render(
+                <QueryClientProvider client={queryClient}>
                 <AuthProvider {...OidcService.oidcConfig} onSigninCallback={onSigninCallback}>
                     <Content/>
                 </AuthProvider>,
+                </QueryClientProvider>
             );
         });
         await sleep(100);
