@@ -45,9 +45,10 @@ describe("EditUser component", () => {
         assert.isNotNull(await screen.getByText("Error loading user"));
     });
     test("shows validation error with empty user", async () => {
+        fetchMock.getOnce("/api/rest/users/1", {id:1, username: "", password: "", email: "", role: "" });
         setLocation("/users/1");
         await EditUserPage.render();
-        await EditUserPage.assertUser(undefined, "", "", undefined);
+        await EditUserPage.assertUser(1, "", "", undefined);
         await EditUserPage.clickSaveUser();
         assert.isNotNull(await screen.getByText("Username required"));
         assert.isNotNull(await screen.getByText("Password required"));

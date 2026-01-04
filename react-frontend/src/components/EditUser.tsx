@@ -1,5 +1,4 @@
 import * as React from "react";
-import {useEffect} from "react";
 import User from "../domain/User";
 import type UserService from "../api/UserService";
 import UserServiceImpl from "../api/UserServiceImpl";
@@ -12,21 +11,33 @@ import * as Icons from "@fortawesome/free-solid-svg-icons";
 import {Form as FormikForm, Formik, type FormikProps} from "formik";
 import * as Yup from "yup";
 import {InputField} from "./InputField.tsx";
-import {useIsMounted} from "usehooks-ts";
-import {type NavigateFunction, useNavigate, useParams} from "react-router";
+import { type NavigateFunction, useNavigate, useParams } from "react-router";
+import { useQuery } from "@tanstack/react-query";
 
 export default function EditUser() {
     const userService: UserService = new UserServiceImpl();
     const [messages, setMessages] = React.useState<ReadonlyArray<Message>>();
-    const [user, setUser] = React.useState<User>({username:"",password:"", email:"", role: undefined});
     const navigate: NavigateFunction = useNavigate();
     const params = useParams();
-    const isMounted = useIsMounted();
 
-    useEffect(() => {
-        fetchUser();
-    }, [isMounted]);
+    const fetchUser = async (): Promise<User> => {
+      const id = Number(params.id);
+      if (id) {
+        return await userService.findById(id);
+      }
+      return { username: "", password: "", email: "", role: undefined };
+    };
 
+    const { data: user, error } = useQuery({
+      queryKey: ["user"],
+      queryFn: fetchUser,
+      retry: false,
+      initialData: { username: "", password: "", email: "", role: undefined },
+    });
+
+    if (error) {
+      return <Messages messages={[{ text: error.message, type: MessageType.ERROR }]} />;
+    }
 
     const schema = Yup.object().shape({
         username: Yup.string().required("username.required"),
@@ -35,21 +46,7 @@ export default function EditUser() {
         role: Yup.string().required("role.required"),
     });
 
-    const fetchUser = async (): Promise<void> => {
-        const id = Number(params.id);
-        if (id) {
-            try {
-                setUser(await userService.findById(id));
-            } catch (error: unknown) {
-                if (error instanceof Error) {
-                    setMessages([{text: error.message, type: MessageType.ERROR}]);
-                }
-            }
-        }
-    }
-
     const onSubmit = async (user: User) => {
-        setUser(user);
         await submitUser(user);
     }
 
