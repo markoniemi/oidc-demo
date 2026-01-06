@@ -2,6 +2,7 @@ import {type ILoginForm} from "../components/LoginForm";
 import Http from "./Http";
 import Jwt from "./Jwt";
 import type LoginService from "./LoginService.ts";
+import OidcService from "./OidcService.ts";
 
 export default class LoginServiceImpl implements LoginService {
     private readonly url = `/api/rest/auth/login/`;
@@ -16,5 +17,6 @@ export default class LoginServiceImpl implements LoginService {
 
     public async logout(): Promise<void> {
         Jwt.clearToken();
+        OidcService.clearToken();
     }
 }

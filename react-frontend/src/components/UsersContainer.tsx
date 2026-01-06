@@ -14,19 +14,15 @@ import { type AuthContextProps, useAuth } from "react-oidc-context";
 import { type NavigateFunction, useNavigate } from "react-router";
 import type LoginService from "../api/LoginService.ts";
 import { useQuery } from "@tanstack/react-query";
-import { type JSX, useState } from "react";
+import { type JSX } from "react";
 
 export default function UsersContainer(): JSX.Element {
   const loginService: LoginService = new LoginServiceImpl();
   const userService: UserService = new UserServiceImpl();
-  const [messages, setMessages] = useState<ReadonlyArray<Message>>();
   const auth: AuthContextProps = useAuth();
   const navigate: NavigateFunction = useNavigate();
   const { data: users, error } = useQuery({ queryKey: ["users"], queryFn: () => userService.findAll(), retry: false });
-
-  if (error) {
-    return <Messages messages={[{ text: error.message, type: MessageType.ERROR }]} />;
-  }
+  let messages: ReadonlyArray<Message> = [];
 
   const addUser = (): void => {
     navigate("/users/new");
@@ -38,7 +34,7 @@ export default function UsersContainer(): JSX.Element {
         await userService.delete(id);
       } catch (error: unknown) {
         if (error instanceof Error) {
-          setMessages([{ text: error.message, type: MessageType.ERROR }]);
+          messages=[{ text: error.message, type: MessageType.ERROR }];
         }
       }
       await userService.findAll();
@@ -50,6 +46,10 @@ export default function UsersContainer(): JSX.Element {
     auth.removeUser();
     navigate("/");
   };
+
+  if (error) {
+    messages = [{ text: error.message, type: MessageType.ERROR }];
+  }
 
   let userItems: JSX.Element[] = [];
   if (users) {
