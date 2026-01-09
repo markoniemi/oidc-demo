@@ -1,10 +1,6 @@
 server:
   port: 9090
 
-logging:
-  level:
-    org.springframework.security: trace
-
 spring:
   security:
     user:
@@ -36,5 +32,4 @@ spring:
                 - profile
                 - email
             require-authorization-consent: false
-#            require-proof-key: true
             
