@@ -26,7 +26,11 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @Component
 public class UserRepositoryAuthenticationProvider implements AuthenticationProvider {
-  @Resource UserService userService;
+  private UserService userService;
+
+  public UserRepositoryAuthenticationProvider(UserService userService) {
+    this.userService = userService;
+  }
 
   /** Authenticate using UserRepository. */
   @Override

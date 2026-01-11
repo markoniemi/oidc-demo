@@ -1,6 +1,7 @@
 package org.example.service.user;
 
 import java.util.List;
+
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.Validate;
 import org.example.log.InterfaceLog;
@@ -20,7 +21,11 @@ import lombok.extern.log4j.Log4j2;
 @WebService(endpointInterface = "org.example.service.user.UserService", serviceName = "UserService")
 @InterfaceLog
 public class UserServiceImpl implements UserService {
-  @Resource UserRepository userRepository;
+  private UserRepository userRepository;
+
+  public UserServiceImpl(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
   @Override
   @Transactional

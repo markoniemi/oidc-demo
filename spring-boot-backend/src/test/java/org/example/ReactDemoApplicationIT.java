@@ -7,18 +7,23 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import jakarta.annotation.Resource;
 
 public class ReactDemoApplicationIT extends AbstractIntegrationTestBase {
-  @Resource protected WebDriver webDriver;
+  private UsersPage usersPage;
+  private EditUserPage editUserPage;
+  private LoginPage loginPage;
+  protected WebDriver webDriver;
 
   @Value("${loginUrl:http://localhost:8080}")
   private String loginUrl;
 
-  private UsersPage usersPage;
-  private EditUserPage editUserPage;
-  private LoginPage loginPage;
+  @Autowired
+  public ReactDemoApplicationIT(WebDriver webDriver) {
+    this.webDriver = webDriver;
+  }
 
   @BeforeEach
   public void setUp() {

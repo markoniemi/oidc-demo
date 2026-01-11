@@ -16,10 +16,18 @@ import jakarta.annotation.Resource;
 
 @Configuration
 public class RestConfig {
-  @Resource private UserService userService;
-  @Resource private TimeService helloService;
-  @Resource private LoginService loginService;
-  @Resource private Bus bus;
+  private UserService userService;
+  private TimeService helloService;
+  private LoginService loginService;
+  private Bus bus;
+
+  public RestConfig(
+      UserService userService, TimeService helloService, LoginService loginService, Bus bus) {
+    this.userService = userService;
+    this.helloService = helloService;
+    this.loginService = loginService;
+    this.bus = bus;
+  }
 
   @Bean(destroyMethod = "destroy")
   public Server jaxRsServer() {

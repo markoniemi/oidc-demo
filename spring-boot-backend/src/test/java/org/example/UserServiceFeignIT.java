@@ -15,9 +15,15 @@ import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserServiceFeignIT extends AbstractIntegrationTestBase {
-  @Resource private UserService userService;
+  private UserService userService;
+
+  @Autowired
+  public UserServiceFeignIT(UserService userService) {
+    this.userService = userService;
+  }
 
   @Test
   public void findAll() throws JsonParseException, JsonMappingException, IOException {
