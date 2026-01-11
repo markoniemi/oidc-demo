@@ -43,7 +43,7 @@ export default function UsersContainer(): JSX.Element {
 
   const logout = async () => {
     await loginService.logout();
-    auth.removeUser();
+    await auth.removeUser();
     navigate("/");
   };
 

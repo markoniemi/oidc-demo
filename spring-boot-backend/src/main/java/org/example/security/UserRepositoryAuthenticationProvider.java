@@ -16,13 +16,6 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.log4j.Log4j2;
 
-/**
- * Spring security AuthenticationProvider which authenticates using UserRepository.
- *
- * @see http://tedyoung.me/2011/06/21/spring-security-custom-authenticators/
- * @see http ://samerabdelkafi.wordpress.com/2011/01/16/secure-your-web-application
- *     -with-spring-security/
- */
 @Log4j2
 @Component
 public class UserRepositoryAuthenticationProvider implements AuthenticationProvider {

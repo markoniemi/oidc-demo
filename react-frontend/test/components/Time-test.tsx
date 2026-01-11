@@ -28,7 +28,7 @@ describe("Time component", () => {
   test("renders text", async () => {
     fetchMock.post("/api/rest/time", "response");
     await act(async () => {
-      renderTime();
+      await renderTime();
     });
     await sleep(100);
     assert.equal((await screen.findByTestId("message")).textContent, "response");
@@ -37,14 +37,14 @@ describe("Time component", () => {
     fetchMock.postOnce("/api/rest/time", "response1");
     fetchMock.postOnce("/api/rest/time", "response2");
     await act(async () => {
-      renderTime();
+      await renderTime();
     });
-      await sleep(500);
-      assert.equal((await screen.findByTestId("message")).textContent, "response1");
+    await sleep(500);
+    assert.equal((await screen.findByTestId("message")).textContent, "response1");
     await act(async () => {
-      await fireEvent.click(await AbstractPage.findButton("fetchMessage"));
+      fireEvent.click(await AbstractPage.findButton("fetchMessage"));
     });
-      await sleep(500);
+    await sleep(500);
     await act(async () => {
       assert.equal((await screen.findByTestId("message")).textContent, "response2");
     });
