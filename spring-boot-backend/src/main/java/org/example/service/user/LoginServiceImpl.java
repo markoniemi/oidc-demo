@@ -1,28 +1,27 @@
 package org.example.service.user;
 
-import javax.naming.AuthenticationException;
-import org.example.model.user.User;
-import org.example.security.JwtToken;
-import org.springframework.stereotype.Component;
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
-import lombok.Getter;
-import lombok.Setter;
+import javax.naming.AuthenticationException;
 import lombok.extern.log4j.Log4j2;
+import org.example.model.user.User;
+import org.example.security.JwtToken;
+import org.springframework.stereotype.Component;
 
 @Log4j2
 @Produces({MediaType.APPLICATION_JSON})
 @Component(value = "loginService")
 @Path("/auth")
 public class LoginServiceImpl implements LoginService {
-  @Resource @Getter @Setter
-  // private UserService userService = new UserServiceImpl();
-  private UserService userService;
+  private final UserService userService;
+
+  public LoginServiceImpl(UserService userService) {
+    this.userService = userService;
+  }
 
   @Override
   @POST
@@ -45,7 +44,7 @@ public class LoginServiceImpl implements LoginService {
   @POST
   @Path("/logout")
   public void logout(@Context HttpServletRequest request) {
-    String authenticationToken = (String) request.getHeader(JwtToken.AUTHORIZATION_HEADER);
+    String authenticationToken = request.getHeader(JwtToken.AUTHORIZATION_HEADER);
     log.debug(authenticationToken);
   }
 }

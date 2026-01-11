@@ -7,7 +7,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 import java.util.Arrays;
 import java.util.List;
-
+import lombok.extern.log4j.Log4j2;
 import org.example.model.user.Role;
 import org.example.model.user.User;
 import org.example.service.user.UserRestClient;
@@ -16,60 +16,61 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import lombok.extern.log4j.Log4j2;
-
 @Log4j2
 public class UserServiceOAuthRestIT extends AbstractIntegrationTestBase {
-  private UserRestClient userService;
-  @Autowired OAuthTokenHelper oAuthTokenHelper;
+  private UserRestClient userRestClient;
+  private final OAuthTokenHelper oAuthTokenHelper;
+
+  @Autowired
+  public UserServiceOAuthRestIT( OAuthTokenHelper oAuthTokenHelper) {
+    this.oAuthTokenHelper = oAuthTokenHelper;
+  }
 
   @BeforeEach
   public void init() {
-    userService = new UserRestClient(oAuthTokenHelper.getAccessToken());
+    userRestClient = new UserRestClient(oAuthTokenHelper.getAccessToken());
   }
 
   @Test
-  public void findAll() throws JsonProcessingException {
-    List<User> users = userService.findAll();
+  public void findAll()  {
+    List<User> users = userRestClient.findAll();
     assertNotNull(users);
     assertEquals(6, users.size());
   }
 
   @Test
-  public void find() throws JsonProcessingException {
-    List<User> users = userService.findAll();
+  public void find()  {
+    List<User> users = userRestClient.findAll();
     assertNotNull(users);
     log.info(Arrays.toString(users.toArray()));
     assertEquals(6, users.size());
-    users = userService.findByEmail("email0");
+    users = userRestClient.findByEmail("email0");
     assertNotNull(users);
     log.info(Arrays.toString(users.toArray()));
     assertEquals(1, users.size());
     assertEquals("email0", users.get(0).getEmail());
-    users = userService.findByUsername("username0");
+    users = userRestClient.findByUsername("username0");
     assertNotNull(users);
     assertEquals(1, users.size());
     assertEquals("username0", users.get(0).getUsername());
   }
 
   @Test
-  public void create() throws JsonProcessingException {
+  public void create()  {
     User user = new User("username", "password", "email", Role.ROLE_USER);
-    user = userService.create(user);
+    user = userRestClient.create(user);
     assertNotNull(user);
     assertNotNull(user.getId());
-    user = userService.find(user.getId());
+    user = userRestClient.find(user.getId());
     assertNotNull(user);
     assertNotNull(user.getId());
-    userService.delete(user.getId());
+    userRestClient.delete(user.getId());
   }
 
   @Test
-  public void createWithInvalidUser() throws JsonProcessingException {
+  public void createWithInvalidUser()  {
     String userJson = "{\"username\":null}";
-    List<ValidationError> validationErrors = userService.create(userJson, BAD_REQUEST);
+    List<ValidationError> validationErrors = userRestClient.create(userJson, BAD_REQUEST);
     assertEquals(3, validationErrors.size());
     ValidationError validationError = validationErrors.get(0);
     log.debug(validationError);
@@ -81,16 +82,16 @@ public class UserServiceOAuthRestIT extends AbstractIntegrationTestBase {
   @Test
   public void createWithExistingUser() {
     User user = new User("username", "password", "email", Role.ROLE_USER);
-    user = userService.create(user);
+    user = userRestClient.create(user);
     String userJson = "{\"username\":\"username\"}";
-    userService.create(userJson, BAD_REQUEST);
-    userService.delete(user.getId(), NO_CONTENT);
+    userRestClient.create(userJson, BAD_REQUEST);
+    userRestClient.delete(user.getId(), NO_CONTENT);
   }
 
   @Test
-  public void updateWithInvalidUser() throws JsonProcessingException {
+  public void updateWithInvalidUser()  {
     String userJson = "{\"id\":1, \"username\":null}";
-    List<ValidationError> validationErrors = userService.update(userJson, 1, BAD_REQUEST);
+    List<ValidationError> validationErrors = userRestClient.update(userJson, 1, BAD_REQUEST);
     log.debug(Arrays.toString(validationErrors.toArray()));
     assertEquals(3, validationErrors.size());
     ValidationError validationError = validationErrors.get(0);
@@ -100,13 +101,13 @@ public class UserServiceOAuthRestIT extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void updateWithNonexistingUser() throws JsonProcessingException {
+  public void updateWithNonexistingUser()  {
     String userJson = "{\"id\":555, \"username\":\"username\"}";
-    userService.update(userJson, 555, BAD_REQUEST);
+    userRestClient.update(userJson, 555, BAD_REQUEST);
   }
 
   @Test
   public void deleteNonExistent() {
-    userService.delete(1000L, NO_CONTENT);
+    userRestClient.delete(1000L, NO_CONTENT);
   }
 }

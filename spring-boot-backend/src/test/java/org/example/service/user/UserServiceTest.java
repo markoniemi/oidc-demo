@@ -31,7 +31,12 @@ import jakarta.validation.ConstraintViolationException;
 @ComponentScan("org.example.service.user")
 @PropertySource("datasource.properties")
 class UserServiceTest {
-  @Autowired UserService userService;
+  private final UserService userService;
+
+  @Autowired
+  public UserServiceTest(UserService userService) {
+    this.userService = userService;
+  }
 
   @Test
   void create() {
