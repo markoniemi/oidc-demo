@@ -29,7 +29,7 @@ import jakarta.validation.ConstraintViolationException;
 @EnableJpaRepositories(basePackages = "org.example.repository.user")
 @EntityScan("org.example.model.user")
 @ComponentScan("org.example.service.user")
-@PropertySource("datasource.properties")
+@PropertySource("classpath:datasource.properties")
 class UserServiceTest {
   private final UserService userService;
 

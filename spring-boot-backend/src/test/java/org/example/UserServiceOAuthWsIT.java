@@ -11,7 +11,6 @@ import jakarta.xml.ws.WebServiceException;
 import jakarta.xml.ws.handler.MessageContext;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +66,7 @@ public class UserServiceOAuthWsIT extends AbstractIntegrationTestBase {
   public static void setAuthorizationHeader(Object service, String jwtHeader) {
     Map<String, List<String>> requestHeaders = new HashMap<>();
     if (jwtHeader != null) {
-      requestHeaders.put("Authorization", Arrays.asList(jwtHeader));
+      requestHeaders.put("Authorization", List.of(jwtHeader));
     }
     ((BindingProvider) service)
         .getRequestContext()
