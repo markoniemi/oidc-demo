@@ -5,8 +5,7 @@ export default class OidcService {
     authority: "http://localhost:9090/",
     client_id: "oidc-test",
     redirect_uri: `http://localhost:${process.env.PORT}`,
-    client_authentication: "client_secret_basic",
-    client_secret: "Uq8odAqLX59MuZfNXRwgSRPA3w4qz5TW",
+    // PKCE is enabled by default in oidc-client-ts when client_secret is omitted
   };
 
   public static getUser() {
@@ -17,7 +16,6 @@ export default class OidcService {
   public static getHeaders(): Headers {
     const headers = new Headers({ "content-type": "application/json" });
     const token = OidcService.getToken();
-    // this.debug(`setting jwt to header: ${jwtToken}`);
     if (token) {
       headers.append("Authorization", `Bearer ${token}`);
     }
