@@ -6,11 +6,12 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Arrays;
 import java.util.Base64;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
 @Slf4j
@@ -62,61 +63,15 @@ public class OAuthTokenHelper {
   public String getAccessTokenWithPkce() {
     String codeVerifier = generateCodeVerifier();
     String codeChallenge = generateCodeChallenge(codeVerifier);
-
     // 1. Authenticate to get a session cookie
-    Response loginResponse =
-        RestAssured.given()
-            .baseUri(tokenUri.substring(0, tokenUri.indexOf("/oauth2/token")))
-            .redirects()
-            .follow(false)
-            .formParam("username", testUsername)
-            .formParam("password", testPassword)
-            .post("/login");
-
-    String sessionCookie = loginResponse.getCookie("JSESSIONID");
-    if (sessionCookie == null) {
-      log.error("Authentication failed. Could not get session cookie. Status: {}, Body: {}",
-          loginResponse.getStatusCode(), loginResponse.getBody().asString());
-      throw new IllegalStateException("Authentication failed for test user.");
-    }
-
+    String sessionCookie = getSessionCookie();
     // 2. Get Authorization Code using the session
-    Response authResponse =
-        RestAssured.given()
-            .cookie("JSESSIONID", sessionCookie)
-            .baseUri(authorizationUri)
-            .queryParam("response_type", "code")
-            .queryParam("client_id", clientId)
-            .queryParam("redirect_uri", redirectUri)
-            .queryParam("scope", scope)
-            .queryParam("code_challenge", codeChallenge)
-            .queryParam("code_challenge_method", "S256")
-            .redirects()
-            .follow(false) // Do not follow redirects automatically
-            .get();
-
-    // Extract the authorization code from the redirect URI
-    String location = authResponse.getHeader("Location");
-    if (location == null) {
-      log.error(
-          "Failed to get authorization code. The 'Location' header is missing from the response. "
-              + "This might mean the authorization server returned an error or a login page instead of a redirect. "
-              + "Auth server response status: {}, Response body: {}",
-          authResponse.getStatusCode(),
-          authResponse.getBody().asString());
-      throw new IllegalStateException(
-          "Could not retrieve authorization code from the authorization server.");
-    }
-
-    // A more robust way to extract the 'code' parameter from the redirect URI
-    String authorizationCode =
-        Arrays.stream(location.substring(location.indexOf('?') + 1).split("&"))
-            .filter(param -> param.startsWith("code="))
-            .findFirst()
-            .map(param -> param.substring(5))
-            .orElseThrow(
-                () -> new IllegalStateException("Authorization code not found in redirect URI: " + location));
+    String authorizationCode = getAuthorizationCode(sessionCookie, codeChallenge);
     // 3. Exchange Authorization Code for Access Token
+    return getAccessToken(authorizationCode, codeVerifier);
+  }
+
+  private String getAccessToken(String authorizationCode, String codeVerifier) {
     Response tokenResponse =
         RestAssured.given()
             .baseUri(tokenUri)
@@ -132,6 +87,44 @@ public class OAuthTokenHelper {
             .response();
 
     return tokenResponse.jsonPath().getString("access_token");
+  }
+
+  private String getAuthorizationCode(String sessionCookie, String codeChallenge) {
+    String location = getLocation(sessionCookie, codeChallenge);
+    // Example Location header: https://myapp.com/callback?code=def_456_ghi&state=xyz_987
+    return UriComponentsBuilder.fromUriString(location)
+            .build()
+            .getQueryParams()
+            .getFirst("code");
+  }
+
+  private String getLocation(String sessionCookie, String codeChallenge) {
+    Response authResponse =
+        RestAssured.given()
+            .cookie("JSESSIONID", sessionCookie)
+            .baseUri(authorizationUri)
+            .queryParam("response_type", "code")
+            .queryParam("client_id", clientId)
+            .queryParam("redirect_uri", redirectUri)
+            .queryParam("scope", scope)
+            .queryParam("code_challenge", codeChallenge)
+            .queryParam("code_challenge_method", "S256")
+            .redirects()
+            .follow(false)
+            .get();
+    return authResponse.getHeader("Location");
+  }
+
+  private @NotNull String getSessionCookie() {
+    Response loginResponse =
+        RestAssured.given()
+            .baseUri(tokenUri.substring(0, tokenUri.indexOf("/oauth2/token")))
+            .redirects()
+            .follow(false)
+            .formParam("username", testUsername)
+            .formParam("password", testPassword)
+            .post("/login");
+    return loginResponse.getCookie("JSESSIONID");
   }
 
   private String generateCodeVerifier() {
