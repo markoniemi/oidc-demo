@@ -30,7 +30,6 @@ This document provides guidance for GitHub Copilot to assist in the development 
 * **Comments**: Use comments sparingly to explain complex logic, but avoid obvious comments.
 * **Type Safety**: Always define types and interfaces for props, state, and API responses.
 * **Styling**: Prefer using `react-bootstrap` components and utility classes over custom CSS.
-* **File Organization**: Organize files by feature or domain rather than by type (e.g., group related components, hooks, and services together).
 * **Avoid any**: Do not use the `any` type; always strive for precise typing.
 * **Error Handling**: Implement proper error handling for asynchronous operations, using try/catch blocks or error boundaries as appropriate.
 * **Testing**: Write unit tests for components and hooks using React Testing Library and Vitest.
@@ -84,6 +83,14 @@ The frontend is a single-page application built with React and TypeScript.
     *   **State Management**: For simple component state, use `useState`. For more complex global state, consider using `useContext` with `useReducer`.
     *   **API Interaction**: Place API interaction logic in the `services/` directory. Use fetch for making requests.
     *   **Authentication**: The frontend should handle the OAuth 2.0 redirect flow. When making authenticated API calls, ensure the request includes the necessary credentials.
+
+## Testing and Validation
+
+A core principle of our development process is that the application must always be in a testable and verifiable state.
+
+*   **Synchronize Tests with Code:** Any modification, refactoring, or addition of code must be accompanied by corresponding changes to the test suite.
+*   **Definition of Done:** A task is not considered complete until all relevant tests pass and provide adequate coverage for the new or modified functionality. When you propose a plan, it must include steps for updating tests.
+* Do not use should in test method names.
 
 ## Agent Profiles
 
@@ -159,4 +166,3 @@ When working on infrastructure and deployment tasks:
     2.  Ensure database scripts are idempotent
     3.  Configure proper health checks and monitoring
     4.  Manage secrets and environment variables securely
-
