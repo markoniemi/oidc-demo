@@ -32,4 +32,6 @@ spring:
                 - openid
                 - profile
                 - email
+                - read
+                - write
             require-authorization-consent: false

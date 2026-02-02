@@ -19,7 +19,6 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
   HsqldbIntegrationTestConfig.class,
   H2IntegrationTestConfig.class,
   TestcontainersConfig.class,
-  OAuthTokenHelper.class
 })
 @TestExecutionListeners({
   DependencyInjectionTestExecutionListener.class,

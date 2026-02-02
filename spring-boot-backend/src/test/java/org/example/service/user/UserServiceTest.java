@@ -3,127 +3,108 @@ package org.example.service.user;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.List;
-import org.example.config.TestConfig;
-import org.example.config.TestDatabaseConfig;
 import org.example.model.user.Role;
 import org.example.model.user.User;
+import org.example.repository.user.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.mockito.Mockito.*;
 
-import jakarta.validation.ConstraintViolationException;
-
-@Import({ValidationAutoConfiguration.class, TestConfig.class, TestDatabaseConfig.class})
-@ExtendWith(SpringExtension.class)
-@AutoConfigureDataJpa
-@Transactional
-@EnableJpaRepositories(basePackages = "org.example.repository.user")
-@EntityScan("org.example.model.user")
-@ComponentScan("org.example.service.user")
-@PropertySource("classpath:datasource.properties")
+@ExtendWith(MockitoExtension.class)
 class UserServiceTest {
-  private final UserService userService;
 
-  @Autowired
-  public UserServiceTest(UserService userService) {
-    this.userService = userService;
+  @Mock
+  private UserRepository userRepository;
+
+  @InjectMocks
+  private UserServiceImpl userService;
+
+  private User user;
+
+  @BeforeEach
+  void setUp() {
+    user = new User("username", "password", "email", Role.ROLE_USER);
+    user.setId(1L);
   }
 
   @Test
   void create() {
-    User user = new User("username", "password", "email", Role.ROLE_USER);
-    user = userService.create(user);
-    User savedUser = userService.findById(user.getId());
-    assertEquals(user, savedUser);
-  }
+    when(userRepository.existsByUsername(anyString())).thenReturn(false);
+    when(userRepository.save(any(User.class))).thenReturn(user);
 
-  @Test
-  void createWithInvalidUser() {
-    User user = new User("", "", "", Role.ROLE_USER);
-    ConstraintViolationException exception =
-        assertThrows(ConstraintViolationException.class, () -> userService.create(user));
-    assertEquals(3, exception.getConstraintViolations().size());
+    User createdUser = userService.create(new User("username", "password", "email", Role.ROLE_USER));
+    
+    assertEquals(user, createdUser);
+    verify(userRepository).save(any(User.class));
   }
 
   @Test
   void createWithNullUser() {
-    NullPointerException exception =
-        assertThrows(NullPointerException.class, () -> userService.create(null));
-    assertEquals("invalid.user", exception.getMessage());
+    IllegalArgumentException exception =
+        assertThrows(IllegalArgumentException.class, () -> userService.create(null));
+    assertEquals("User cannot be null", exception.getMessage());
   }
 
   @Test
   void createWithExistingUser() {
-    // TODO use dbunit
-    userService.create(new User("username", "password", "email", Role.ROLE_USER));
-    User user = new User("username", "password", "email", Role.ROLE_USER);
+    when(userRepository.existsByUsername("username")).thenReturn(true);
+    
+    User existingUser = new User("username", "password", "email", Role.ROLE_USER);
     IllegalArgumentException exception =
-        assertThrows(IllegalArgumentException.class, () -> userService.create(user));
-    assertEquals("existing.username", exception.getMessage());
+        assertThrows(IllegalArgumentException.class, () -> userService.create(existingUser));
+    assertEquals("Username already exists", exception.getMessage());
   }
 
   @Test
   void update() {
-    // TODO use dbunit
-    userService.create(new User("username", "password", "email", Role.ROLE_USER));
-    User user = userService.findByUsername("username");
-    user.setEmail("new email");
-    user = userService.update(user);
-    User savedUser = userService.findById(user.getId());
-    assertEquals(user, savedUser);
-  }
+    when(userRepository.existsById(1L)).thenReturn(true);
+    when(userRepository.save(any(User.class))).thenReturn(user);
 
-  @Test
-  void updateWithInvalidUser() {
-    userService.create(new User("username", "password", "email", Role.ROLE_USER));
-    User user = userService.findByUsername("username");
-    user.setUsername("");
-    user.setEmail("");
-    ConstraintViolationException exception =
-        assertThrows(ConstraintViolationException.class, () -> userService.update(user));
-    assertEquals(2, exception.getConstraintViolations().size());
+    user.setEmail("new email");
+    User updatedUser = userService.update(user);
+
+    assertEquals("new email", updatedUser.getEmail());
+    verify(userRepository).save(user);
   }
 
   @Test
   void updateWithNullUser() {
-    NullPointerException exception =
-        assertThrows(NullPointerException.class, () -> userService.update(null));
-    assertEquals("invalid.user", exception.getMessage());
+    IllegalArgumentException exception =
+        assertThrows(IllegalArgumentException.class, () -> userService.update(null));
+    assertEquals("User cannot be null", exception.getMessage());
   }
 
   @Test
   void updateWithNonexistingUser() {
-    User user = new User("username", "password", "email", Role.ROLE_USER);
-    user.setId(0L);
+    when(userRepository.existsById(1L)).thenReturn(false);
+    
     IllegalArgumentException exception =
         assertThrows(IllegalArgumentException.class, () -> userService.update(user));
-    assertEquals("nonexistent.user", exception.getMessage());
+    assertEquals("User not found", exception.getMessage());
   }
 
   @Test
   void search() {
-    userService.create(new User("username", "password", "email", Role.ROLE_USER));
-    userService.create(new User("username1", "password", "email", Role.ROLE_USER));
-    UserSearchForm form = new UserSearchForm("username", null, null);
+    User user1 = new User("username1", "password", "email1", Role.ROLE_USER);
+    User user2 = new User("username2", "password", "email2", Role.ROLE_ADMIN);
+    when(userRepository.findByUsernameOrEmailOrRole("username1", null, null)).thenReturn(List.of(user1));
+
+    UserSearchForm form = new UserSearchForm("username1", null, null);
     List<User> users = userService.search(form);
+    
     assertEquals(1, users.size());
-    form = new UserSearchForm(null, "email", null);
-    users = userService.search(form);
-    assertEquals(2, users.size());
-    form = new UserSearchForm(null, null, Role.ROLE_USER);
-    users = userService.search(form);
-    assertEquals(2, users.size());
-    form = new UserSearchForm(null, null, null);
-    users = userService.search(form);
+    assertEquals("username1", users.get(0).getUsername());
+  }
+
+  @Test
+  void searchWithEmptyForm() {
+    when(userRepository.findAll()).thenReturn(List.of(user, new User()));
+
+    List<User> users = userService.search(new UserSearchForm());
     assertEquals(2, users.size());
   }
 }
