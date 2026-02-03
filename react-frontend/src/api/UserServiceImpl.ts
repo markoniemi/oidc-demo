@@ -3,7 +3,7 @@ import type UserService from "./UserService";
 import Http from "./Http";
 
 export default class UserServiceImpl implements UserService {
-    private readonly url = `/api/rest/users/`;
+    private readonly url = `/api/users/`;
 
     public async findAll(): Promise<User[]> {
         const response: Response = await Http.get(this.url);

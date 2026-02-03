@@ -33,19 +33,19 @@ describe("EditUser component", () => {
         Jwt.clearToken();
     });
     test("renders a user", async () => {
-        fetchMock.getOnce("/api/rest/users/1", user1);
+        fetchMock.getOnce("/api/users/1", user1);
         setLocation("/users/1");
         await EditUserPage.render();
         await EditUserPage.assertUser(user1.id, user1.username, user1.email, user1.role);
     });
     test("shows an error", async () => {
-        fetchMock.getOnce("/api/rest/users/1", 401);
+        fetchMock.getOnce("/api/users/1", 401);
         setLocation("/users/1");
         await EditUserPage.render();
         assert.isNotNull(await screen.getByText("Error loading user"));
     });
     test("shows validation error with empty user", async () => {
-        fetchMock.getOnce("/api/rest/users/1", {id:1, username: "", password: "", email: "", role: "" });
+        fetchMock.getOnce("/api/users/1", {id:1, username: "", password: "", email: "", role: "" });
         setLocation("/users/1");
         await EditUserPage.render();
         await EditUserPage.assertUser(1, "", "", undefined);
@@ -58,7 +58,7 @@ describe("EditUser component", () => {
     test("shows an error with invalid user", async () => {
         setLocation("/users/new");
         await EditUserPage.render();
-        fetchMock.postOnce("/api/rest/users/", 404);
+        fetchMock.postOnce("/api/users/", 404);
         await EditUserPage.setUser("invalid", "invalid", "invalid", "ROLE_ADMIN");
         await EditUserPage.clickSaveUser();
         assert.isNotNull(await screen.getByText("Error saving user"));
@@ -68,20 +68,20 @@ describe("EditUser component", () => {
         await EditUserPage.render();
         await EditUserPage.assertUser(undefined, "", "", undefined);
         await EditUserPage.setUser("user", "password", "email", "ROLE_USER");
-        fetchMock.postOnce("/api/rest/users/", {username: "user", email: "email"});
+        fetchMock.postOnce("/api/users/", {username: "user", email: "email"});
         await EditUserPage.clickSaveUser();
         expect(navigate).toBeCalledWith("/users");
         // expect(history.push).toBeCalledWith("/users");
         assert.isTrue(fetchMock.callHistory.done());
     });
     test("edits a user", async () => {
-        fetchMock.getOnce("/api/rest/users/1", user1);
+        fetchMock.getOnce("/api/users/1", user1);
         setLocation("/users/1");
         await LoginPage.render();
         await EditUserPage.assertUser(user1.id, user1.username, user1.email, user1.role);
         await EditUserPage.setUser("newUsername", "newPassword", "newEmail", "ROLE_USER");
         await EditUserPage.assertUser(1, "newUsername", "newEmail", Role.ROLE_USER);
-        fetchMock.putOnce("/api/rest/users/1", {username: "newUsername", email: "newEmail"});
+        fetchMock.putOnce("/api/users/1", {username: "newUsername", email: "newEmail"});
         await EditUserPage.pressEnter();
         expect(navigate).toBeCalledWith("/users");
         // expect(history.push).toBeCalledWith("/users");

@@ -26,7 +26,7 @@ describe("Time component", () => {
     fetchMock.hardReset();
   });
   test("renders text", async () => {
-    fetchMock.post("/api/rest/time", "response");
+    fetchMock.post("/api/time", "response");
     await act(async () => {
       await renderTime();
     });
@@ -34,8 +34,8 @@ describe("Time component", () => {
     assert.equal((await screen.findByTestId("message")).textContent, "response");
   });
   test("updates text after button press", async () => {
-    fetchMock.postOnce("/api/rest/time", "response1");
-    fetchMock.postOnce("/api/rest/time", "response2");
+    fetchMock.postOnce("/api/time", "response1");
+    fetchMock.postOnce("/api/time", "response2");
     await act(async () => {
       await renderTime();
     });

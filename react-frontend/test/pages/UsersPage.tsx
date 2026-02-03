@@ -11,8 +11,8 @@ import type Role from "../../src/domain/Role.ts";
 export default class UsersPage extends AbstractPage {
     static async deleteUser(user: User) {
         await UsersPage.assertPageLoaded();
-        fetchMock.deleteOnce("/api/rest/users/" + user.id, 200);
-        fetchMock.getOnce("/api/rest/users/", users);
+        fetchMock.deleteOnce("/api/users/" + user.id, 200);
+        fetchMock.getOnce("/api/users/", users);
         await UsersPage.clickDelete(user.username);
     }
 
@@ -61,15 +61,15 @@ export default class UsersPage extends AbstractPage {
     static async editUser(user: User, password: string, email: string, role: Role) {
         await UsersPage.assertPageLoaded();
         await UsersPage.assertUser(user.username);
-        fetchMock.getOnce("/api/rest/users/" + user.id, user);
+        fetchMock.getOnce("/api/users/" + user.id, user);
         await UsersPage.clickEdit(user.username);
         await EditUserPage.assertPageLoaded();
         await EditUserPage.assertUser(user.id, user.username, user.email, user.role);
         await EditUserPage.setUser(user.username, password, email, role);
         await EditUserPage.assertUser(user.id, user.username, email, role);
-        fetchMock.putOnce("/api/rest/users/" + user.id, {username: user.username, email: email});
-        fetchMock.getOnce("/api/rest/users/", users);
-        fetchMock.postOnce("/api/rest/time", "message");
+        fetchMock.putOnce("/api/users/" + user.id, {username: user.username, email: email});
+        fetchMock.getOnce("/api/users/", users);
+        fetchMock.postOnce("/api/time", "message");
         await EditUserPage.clickSaveUser();
     }
 

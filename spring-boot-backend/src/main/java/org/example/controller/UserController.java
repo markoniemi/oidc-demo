@@ -31,7 +31,8 @@ public class UserController {
   private final UserMapper userMapper;
 
   @GetMapping
-  @PreAuthorize("hasAuthority('SCOPE_read')")
+//  @PreAuthorize("hasAuthority('SCOPE_read')")
+  @PreAuthorize("isAuthenticated()")
   public ResponseEntity<List<UserDTO>> getAllUsers() {
     List<UserDTO> users = userService.findAll().stream()
         .map(userMapper::toDTO)
@@ -39,15 +40,17 @@ public class UserController {
     return ResponseEntity.ok(users);
   }
 
-  @GetMapping("/{id}")
-  @PreAuthorize("hasAuthority('SCOPE_read')")
-  public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+  @GetMapping(value = "/{id}", produces = "application/json")
+//  @PreAuthorize("hasAuthority('SCOPE_read')")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long id) {
     User user = userService.findById(id);
     return ResponseEntity.ok(userMapper.toDTO(user));
   }
 
   @PostMapping
-  @PreAuthorize("hasAuthority('SCOPE_write')")
+//  @PreAuthorize("hasAuthority('SCOPE_write')")
+  @PreAuthorize("isAuthenticated()")
   public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserCreateDTO createDTO) {
     User user = userMapper.toEntity(createDTO);
     User createdUser = userService.create(user);
@@ -55,8 +58,9 @@ public class UserController {
   }
 
   @PutMapping("/{id}")
-  @PreAuthorize("hasAuthority('SCOPE_write')")
-  public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO updateDTO) {
+//  @PreAuthorize("hasAuthority('SCOPE_write')")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<UserDTO> updateUser(@PathVariable("id") Long id, @Valid @RequestBody UserUpdateDTO updateDTO) {
     User user = userService.findById(id);
     userMapper.updateEntityFromDTO(updateDTO, user);
     User updatedUser = userService.update(user);
@@ -64,8 +68,9 @@ public class UserController {
   }
 
   @DeleteMapping("/{id}")
-  @PreAuthorize("hasAuthority('SCOPE_write')")
-  public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+//  @PreAuthorize("hasAuthority('SCOPE_write')")
+  @PreAuthorize("isAuthenticated()")
+  public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
     userService.delete(id);
     return ResponseEntity.noContent().build();
   }

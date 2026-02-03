@@ -23,8 +23,8 @@ describe("LoginForm component", () => {
         configure({testIdAttribute: "id"});
         dotenv.config({path: ".env"});
         fetchMock.mockGlobal();
-        fetchMock.postOnce("/api/rest/time", "message");
-        fetchMock.get("/api/rest/users/", 200);
+        fetchMock.postOnce("/api/time", "message");
+        fetchMock.get("/api/users/", 200);
     });
     afterEach(() => {
         fetchMock.hardReset();
@@ -34,7 +34,7 @@ describe("LoginForm component", () => {
         setLocation();
         await LoginPage.render();
         await LoginPage.setLogin("", "");
-        fetchMock.postOnce("/api/rest/auth/login/", 200);
+        fetchMock.postOnce("/api/auth/login/", 200);
         await LoginPage.setLogin("user1", "user1");
         await LoginPage.assertLogin("user1", "user1");
         await LoginPage.pressEnter();
@@ -50,7 +50,7 @@ describe("LoginForm component", () => {
     test("shows an error with invalid credentials", async () => {
         await LoginPage.render();
         await LoginPage.setLogin("invalid", "invalid");
-        fetchMock.postOnce("/api/rest/auth/login/", 400);
+        fetchMock.postOnce("/api/auth/login/", 400);
         await LoginPage.clickLogin();
         assert.isNotNull(await screen.getByText("Login error"));
     });

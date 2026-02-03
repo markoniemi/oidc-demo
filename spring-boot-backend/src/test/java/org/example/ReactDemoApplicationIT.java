@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import jakarta.annotation.Resource;
 
 public class ReactDemoApplicationIT extends AbstractIntegrationTestBase {
   private UsersPage usersPage;

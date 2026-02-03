@@ -12,6 +12,6 @@ export default class TimeServiceImpl implements TimeService {
     }
 
     public getApiUrl(): string {
-        return "/api/rest/time";
+        return "/api/time";
     }
 }

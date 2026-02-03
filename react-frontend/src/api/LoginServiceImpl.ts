@@ -5,7 +5,7 @@ import type LoginService from "./LoginService.ts";
 import OidcService from "./OidcService.ts";
 
 export default class LoginServiceImpl implements LoginService {
-    private readonly url = `/api/rest/auth/login/`;
+    private readonly url = `/api/auth/login/`;
 
     public async login(loginForm: ILoginForm): Promise<string> {
         const response: Response = await Http.post(this.url, JSON.stringify(loginForm));
