@@ -19,6 +19,5 @@
 		<Logger name="org.hibernate" level="ERROR" />
 		<Logger name="org.apache.logging" level="ERROR" />
 		<Logger name="org.apache.tomcat.util.scan" level="ERROR" />
-    <Logger name="com.github.springtestdbunit" level="DEBUG" />
     </Loggers>
 </Configuration>

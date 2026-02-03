@@ -63,7 +63,6 @@ class UserServiceTest {
 
   @Test
   void createWithExistingUser() {
-    // TODO use dbunit
     userService.create(new User("username", "password", "email", Role.ROLE_USER));
     User user = new User("username", "password", "email", Role.ROLE_USER);
     IllegalArgumentException exception =
@@ -73,7 +72,6 @@ class UserServiceTest {
 
   @Test
   void update() {
-    // TODO use dbunit
     userService.create(new User("username", "password", "email", Role.ROLE_USER));
     User user = userService.findByUsername("username");
     user.setEmail("new email");
