@@ -9,8 +9,6 @@ import org.example.model.user.User;
 import org.example.repository.user.UserRepository;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-import jakarta.annotation.Resource;
-import jakarta.jws.WebService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.log4j.Log4j2;
@@ -18,10 +16,9 @@ import lombok.extern.log4j.Log4j2;
 @Primary
 @Log4j2
 @Service(value = "userService")
-@WebService(endpointInterface = "org.example.service.user.UserService", serviceName = "UserService")
 @InterfaceLog
 public class UserServiceImpl implements UserService {
-  private UserRepository userRepository;
+  private final UserRepository userRepository;
 
   public UserServiceImpl(UserRepository userRepository) {
     this.userRepository = userRepository;
@@ -74,7 +71,7 @@ public class UserServiceImpl implements UserService {
   public User findById(Long id) {
     log.trace("findById: {}", id);
     Validate.notNull(id, "null.id");
-    return userRepository.findById(id).get();
+    return userRepository.findById(id).orElseThrow();
   }
 
   @Override
@@ -90,13 +87,13 @@ public class UserServiceImpl implements UserService {
   @InterfaceLog
   public boolean exists(Long id) {
     log.trace("exists: {}", id);
-    return userRepository.findById(id) != null;
+    return userRepository.existsById(id);
   }
 
   @Override
   @Transactional
   @InterfaceLog
-  /** If the entity is not found in the persistence store it is silently ignored. */
+  // If the entity is not found in the persistence store it is silently ignored.
   public void delete(Long id) {
     log.trace("delete: {}", id);
     userRepository.deleteById(id);
