@@ -58,7 +58,7 @@ describe("EditUser component", () => {
     test("shows an error with invalid user", async () => {
         setLocation("/users/new");
         await EditUserPage.render();
-        fetchMock.postOnce("/api/rest/users/", 404);
+        fetchMock.postOnce("/api/rest/users", 404);
         await EditUserPage.setUser("invalid", "invalid", "invalid", "ROLE_ADMIN");
         await EditUserPage.clickSaveUser();
         assert.isNotNull(await screen.getByText("Error saving user"));
@@ -68,7 +68,7 @@ describe("EditUser component", () => {
         await EditUserPage.render();
         await EditUserPage.assertUser(undefined, "", "", undefined);
         await EditUserPage.setUser("user", "password", "email", "ROLE_USER");
-        fetchMock.postOnce("/api/rest/users/", {username: "user", email: "email"});
+        fetchMock.postOnce("/api/rest/users", {username: "user", email: "email"});
         await EditUserPage.clickSaveUser();
         expect(navigate).toBeCalledWith("/users");
         // expect(history.push).toBeCalledWith("/users");

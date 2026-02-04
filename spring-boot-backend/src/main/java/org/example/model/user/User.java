@@ -14,9 +14,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -36,8 +33,6 @@ import lombok.ToString;
 @EqualsAndHashCode(of = "username")
 @Entity
 @Table(name = "app_users", uniqueConstraints = @UniqueConstraint(columnNames = "username"))
-@XmlRootElement(name = "User")
-@XmlAccessorType(XmlAccessType.FIELD)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
   @Id

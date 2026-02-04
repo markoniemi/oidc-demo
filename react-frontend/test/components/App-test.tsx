@@ -50,8 +50,8 @@ describe.todo("App component", () => {
     await UsersPage.clickAddUser();
     await EditUserPage.assertUser(undefined, "", "", undefined);
     await EditUserPage.setUser("newUser", "password", "email", "ROLE_USER");
-    fetchMock.postOnce("/api/rest/users/", { username: "newUser", email: "email" });
-    fetchMock.getOnce("/api/rest/users/", users);
+    fetchMock.postOnce("/api/rest/users", { username: "newUser", email: "email" });
+    fetchMock.getOnce("/api/rest/users", users);
     fetchMock.postOnce("/api/rest/time", "message");
     await EditUserPage.clickSaveUser();
    await sleep(100);

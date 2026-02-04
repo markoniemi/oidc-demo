@@ -3,7 +3,7 @@ import type UserService from "./UserService";
 import Http from "./Http";
 
 export default class UserServiceImpl implements UserService {
-    private readonly url = `/api/rest/users/`;
+    private readonly url = `/api/rest/users`;
 
     public async findAll(): Promise<User[]> {
         const response: Response = await Http.get(this.url);
@@ -15,7 +15,7 @@ export default class UserServiceImpl implements UserService {
     }
 
     public async findById(id: number): Promise<User> {
-        const response: Response = await Http.get(this.url + id);
+        const response: Response = await Http.get(this.url +"/"+ id);
         if (response.ok) {
             return response.json();
         } else {
@@ -36,14 +36,14 @@ export default class UserServiceImpl implements UserService {
         if (id === undefined) {
             return;
         }
-        const response: Response = await Http.delete(this.url + id);
+        const response: Response = await Http.delete(this.url + "/" + id);
         if (!response.ok) {
             throw new Error("error.delete.user");
         }
     }
 
     public async update(user: User): Promise<User> {
-        const response: Response = await Http.update(this.url + user.id, JSON.stringify(user));
+        const response: Response = await Http.update(this.url +"/"+ user.id, JSON.stringify(user));
         if (response.ok) {
             return response.json();
         } else {

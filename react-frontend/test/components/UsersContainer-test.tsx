@@ -31,7 +31,7 @@ describe("UsersContainer component", () => {
     fetchMock.hardReset();
   });
   test("renders userlist", async () => {
-    fetchMock.getOnce("/api/rest/users/", users);
+    fetchMock.getOnce("/api/rest/users", users);
     setLocation("/users");
     await UsersPage.render();
     await sleep(100);
@@ -40,20 +40,20 @@ describe("UsersContainer component", () => {
   });
   test("creates no error with empty user", async () => {
     const emptyUser = new User("");
-    fetchMock.getOnce("/api/rest/users/", [emptyUser]);
+    fetchMock.getOnce("/api/rest/users", [emptyUser]);
     setLocation("/users");
     await UsersPage.render();
     await UsersPage.assertUser("", "");
   });
   test("creates no error error with empty list", async () => {
-    fetchMock.getOnce("/api/rest/users/", []);
+    fetchMock.getOnce("/api/rest/users", []);
     setLocation("/users");
     await UsersPage.render();
     assert.isNotNull(await screen.getByText("Username"));
     assert.isNotNull(await screen.getByText("Email"));
   });
   test("adds user", async () => {
-    fetchMock.getOnce("/api/rest/users/", users);
+    fetchMock.getOnce("/api/rest/users", users);
     setLocation("/users");
     await UsersPage.render();
     await UsersPage.clickAddUser();
@@ -61,21 +61,21 @@ describe("UsersContainer component", () => {
     // expect(history.push).toBeCalledWith("/users/new");
   });
   test("renders error message when loading users fail", async () => {
-    fetchMock.getOnce("/api/rest/users/", 401);
+    fetchMock.getOnce("/api/rest/users", 401);
     setLocation("/users");
     await UsersPage.render();
     assert.isNotNull(await screen.getByText("Error loading users"));
   });
   test("edits user", async () => {
     window.confirm = vi.fn();
-    fetchMock.getOnce("/api/rest/users/", users);
+    fetchMock.getOnce("/api/rest/users", users);
     setLocation("/users");
     await UsersPage.render();
     await UsersPage.clickEdit("user1");
     expect(navigate).toBeCalledWith("/users/1");
   });
   test("deletes user", async () => {
-    fetchMock.get("/api/rest/users/", users);
+    fetchMock.get("/api/rest/users", users);
     fetchMock.deleteOnce("/api/rest/users/1", 200);
     setLocation("/users");
     await UsersPage.render();
@@ -83,7 +83,7 @@ describe("UsersContainer component", () => {
     assert.isTrue(fetchMock.callHistory.done());
   });
   test("logs out", async () => {
-    fetchMock.getOnce("/api/rest/users/", users);
+    fetchMock.getOnce("/api/rest/users", users);
     setLocation("/users");
     await UsersPage.render();
     await UsersPage.clickLogout();

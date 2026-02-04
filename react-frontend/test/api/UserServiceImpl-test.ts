@@ -17,12 +17,12 @@ describe("UserService", () => {
     fetchMock.hardReset();
   });
   test("fetchUsers", async () => {
-    fetchMock.getOnce("/api/rest/users/", users);
+    fetchMock.getOnce("/api/rest/users", users);
     const fetchedUsers = await userService.findAll();
     assert.equal(fetchedUsers.length, 2);
   });
   test("findAll fails", async () => {
-    fetchMock.getOnce("/api/rest/users/", 401);
+    fetchMock.getOnce("/api/rest/users", 401);
     expect(userService.findAll()).rejects.toThrow();
   });
   test("findById", async () => {
@@ -36,14 +36,14 @@ describe("UserService", () => {
   });
   test("create", async () => {
     const userMock: User = new User("user3", "user3", "email3", 3);
-    fetchMock.postOnce("/api/rest/users/", userMock);
+    fetchMock.postOnce("/api/rest/users", userMock);
     const user: User = new User("user3", "user3", "email3");
     const savedUser = await userService.create(user);
     assert.equal(savedUser.username, "user3");
     assert.equal(savedUser.id, 3);
   });
   test("create fails", async () => {
-    fetchMock.postOnce("/api/rest/users/", 500);
+    fetchMock.postOnce("/api/rest/users", 500);
     expect(userService.create(null)).rejects.toThrow();
   });
   test("update", async () => {
