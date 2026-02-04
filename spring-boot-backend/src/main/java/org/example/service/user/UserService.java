@@ -5,7 +5,6 @@ import java.util.List;
 import jakarta.validation.Valid;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.Validate;
-import org.example.log.InterfaceLog;
 import org.example.model.user.User;
 import org.example.repository.user.UserRepository;
 import org.springframework.context.annotation.Primary;
@@ -18,7 +17,6 @@ import org.springframework.validation.annotation.Validated;
 @Primary
 @Log4j2
 @Service(value = "userService")
-@InterfaceLog
 @Validated
 public class UserService {
   private final UserRepository userRepository;
@@ -28,14 +26,12 @@ public class UserService {
   }
 
   @Transactional
-  @InterfaceLog
   public List<User> findAll() {
     log.trace("findAll");
     return IterableUtils.toList(userRepository.findAll());
   }
 
   @Transactional
-  @InterfaceLog
   public List<User> search(UserSearchForm searchForm) {
     log.trace("search: {}", searchForm);
     // findByUsernameOrEmailOrRole returns nothing if searchForm is empty
@@ -47,7 +43,6 @@ public class UserService {
   }
 
   @Transactional
-  @InterfaceLog
   public User create(@Valid User user) throws ConstraintViolationException {
     Validate.notNull(user, "invalid.user");
     Validate.isTrue(!userRepository.existsByUsername(user.getUsername()), "existing.username");
@@ -56,7 +51,6 @@ public class UserService {
   }
 
   @Transactional
-  @InterfaceLog
   public User update(@Valid User user) throws ConstraintViolationException {
     Validate.notNull(user, "invalid.user");
     Validate.isTrue(userRepository.existsById(user.getId()), "nonexistent.user");
@@ -65,7 +59,6 @@ public class UserService {
   }
 
   @Transactional
-  @InterfaceLog
   public User findById(Long id) {
     log.trace("findById: {}", id);
     Validate.notNull(id, "null.id");
@@ -73,21 +66,18 @@ public class UserService {
   }
 
   @Transactional
-  @InterfaceLog
   public User findByUsername(String username) {
     log.trace("findByUsername: {}", username);
     return userRepository.findByUsername(username);
   }
 
   @Transactional
-  @InterfaceLog
   public boolean exists(Long id) {
     log.trace("exists: {}", id);
     return userRepository.existsById(id);
   }
 
   @Transactional
-  @InterfaceLog
   // If the entity is not found in the persistence store it is silently ignored.
   public void delete(Long id) {
     log.trace("delete: {}", id);
@@ -95,7 +85,6 @@ public class UserService {
   }
 
   @Transactional
-  @InterfaceLog
   public long count() {
     return userRepository.count();
   }

@@ -4,6 +4,9 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.example.dto.UserDto;
+import org.example.log.InterfaceLog;
+import org.example.mapper.UserMapper;
 import org.example.model.user.User;
 import org.example.service.user.UserSearchForm;
 import org.example.service.user.UserService;
@@ -23,43 +26,54 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/rest/users")
 @RequiredArgsConstructor
+@InterfaceLog
 public class UserController {
   private final UserService userService;
+  private final UserMapper userMapper;
 
   @GetMapping({"", "/"})
-  public List<User> search(@ModelAttribute UserSearchForm searchForm) {
+  @InterfaceLog
+  public List<UserDto> search(@ModelAttribute UserSearchForm searchForm) {
     log.debug("search: {}", searchForm);
+    List<User> users;
     if (searchForm == null || searchForm.isEmpty()) {
-      return userService.findAll();
+      users = userService.findAll();
+    } else {
+      users = userService.search(searchForm);
     }
-    return userService.search(searchForm);
+    return userMapper.toDtos(users);
   }
 
   @PostMapping
-  public User create(@Valid @RequestBody User user) {
+  @InterfaceLog
+  public UserDto create(@Valid @RequestBody User user) {
     log.debug("create: {}", user);
-    return userService.create(user);
+    return userMapper.toDto(userService.create(user));
   }
 
   @PutMapping("/{id}")
-  public User update(@PathVariable Long id, @Valid @RequestBody User user) {
+  @InterfaceLog
+  public UserDto update(@PathVariable Long id, @Valid @RequestBody User user) {
     log.debug("update: {}, id: {}", user, id);
-    return userService.update(user);
+    return userMapper.toDto(userService.update(user));
   }
 
   @GetMapping("/{id}")
-  public User findById(@PathVariable Long id) {
+  @InterfaceLog
+  public UserDto findById(@PathVariable Long id) {
     log.debug("findById: {}", id);
-    return userService.findById(id);
+    return userMapper.toDto(userService.findById(id));
   }
 
   @GetMapping("/username/{username}")
-  public User findByUsername(@PathVariable String username) {
+  @InterfaceLog
+  public UserDto findByUsername(@PathVariable String username) {
     log.debug("findByUsername: {}", username);
-    return userService.findByUsername(username);
+    return userMapper.toDto(userService.findByUsername(username));
   }
 
   @GetMapping("/exists/{id}")
+  @InterfaceLog
   public boolean exists(@PathVariable Long id) {
     log.debug("exists: {}", id);
     return userService.exists(id);
@@ -67,12 +81,14 @@ public class UserController {
 
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
+  @InterfaceLog
   public void delete(@PathVariable Long id) {
     log.debug("delete: {}", id);
     userService.delete(id);
   }
 
   @GetMapping("/count")
+  @InterfaceLog
   public long count() {
     log.debug("count");
     return userService.count();

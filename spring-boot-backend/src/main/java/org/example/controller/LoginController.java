@@ -4,9 +4,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import javax.naming.AuthenticationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.example.model.user.User;
+import org.example.dto.LoginDto;
+import org.example.log.InterfaceLog;
 import org.example.security.JwtToken;
-import org.example.service.user.UserService;
+import org.example.service.user.LoginService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,27 +17,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/rest/auth")
 @RequiredArgsConstructor
+@InterfaceLog
 public class LoginController {
-  private final UserService userService;
+  private final LoginService loginService;
 
   @PostMapping("/login")
-  public String login(@RequestBody User userToLogin) throws AuthenticationException {
-    log.debug("Login attempt for user: {}", userToLogin.getUsername());
-    User user = userService.findByUsername(userToLogin.getUsername());
-    if (user == null) {
-      throw new AuthenticationException("Login error");
-    }
-    if (user.getPassword().equals(userToLogin.getPassword())) {
-      log.debug("Username: {} logged in.", user.getUsername());
-      return JwtToken.create(user.getUsername());
-    } else {
-      throw new AuthenticationException("Login error");
-    }
+  @InterfaceLog
+  public String login(@RequestBody LoginDto loginDto) throws AuthenticationException {
+    log.debug("Login attempt for user: {}", loginDto.getUsername());
+    return loginService.login(loginDto);
   }
 
   @PostMapping("/logout")
+  @InterfaceLog
   public void logout(HttpServletRequest request) {
     String authenticationToken = request.getHeader(JwtToken.AUTHORIZATION_HEADER);
-    log.debug("Logout with token: {}", authenticationToken);
+    loginService.logout(authenticationToken);
   }
 }
