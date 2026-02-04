@@ -1,46 +1,102 @@
 package org.example.service.user;
 
 import java.util.List;
-import org.example.model.user.User;
-import org.springframework.validation.annotation.Validated;
+
 import jakarta.validation.Valid;
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.lang3.Validate;
+import org.example.log.InterfaceLog;
+import org.example.model.user.User;
+import org.example.repository.user.UserRepository;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
+import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolationException;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.validation.annotation.Validated;
 
+@Primary
+@Log4j2
+@Service(value = "userService")
+@InterfaceLog
 @Validated
-public interface UserService {
-  /**
-   * @return all users from repository or an empty list in case of no items.
-   */
-  List<User> findAll();
+public class UserService {
+  private final UserRepository userRepository;
 
-  List<User> search(UserSearchForm userSearchForm);
+  public UserService(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
-  /**
-   * Creates a user to repository.
-   */
-  User create(@Valid User user);
+  @Transactional
+  @InterfaceLog
+  public List<User> findAll() {
+    log.trace("findAll");
+    return IterableUtils.toList(userRepository.findAll());
+  }
 
-  /**
-   * Updates a user in repository.
-   */
-  User update(@Valid User user);
+  @Transactional
+  @InterfaceLog
+  public List<User> search(UserSearchForm searchForm) {
+    log.trace("search: {}", searchForm);
+    // findByUsernameOrEmailOrRole returns nothing if searchForm is empty
+    if (searchForm.isEmpty()) {
+      return IterableUtils.toList(userRepository.findAll());
+    }
+    return userRepository.findByUsernameOrEmailOrRole(
+        searchForm.getUsername(), searchForm.getEmail(), searchForm.getRole());
+  }
 
-  User findById(Long id);
+  @Transactional
+  @InterfaceLog
+  public User create(@Valid User user) throws ConstraintViolationException {
+    Validate.notNull(user, "invalid.user");
+    Validate.isTrue(!userRepository.existsByUsername(user.getUsername()), "existing.username");
+    log.trace("create: {}", user);
+    return userRepository.save(user);
+  }
 
-  /**
-   * @return user by username, or null if user does not exist
-   */
-  User findByUsername(String username);
+  @Transactional
+  @InterfaceLog
+  public User update(@Valid User user) throws ConstraintViolationException {
+    Validate.notNull(user, "invalid.user");
+    Validate.isTrue(userRepository.existsById(user.getId()), "nonexistent.user");
+    log.trace("update: {}", user);
+    return userRepository.save(user);
+  }
 
-  /**
-   * @return true if a user by username exists.
-   */
-  boolean exists(Long id);
+  @Transactional
+  @InterfaceLog
+  public User findById(Long id) {
+    log.trace("findById: {}", id);
+    Validate.notNull(id, "null.id");
+    return userRepository.findById(id).orElseThrow();
+  }
 
-  /** Deletes a user by username. */
-  void delete(Long id);
+  @Transactional
+  @InterfaceLog
+  public User findByUsername(String username) {
+    log.trace("findByUsername: {}", username);
+    return userRepository.findByUsername(username);
+  }
 
-  /**
-   * @return the count of users in repository.
-   */
-  long count();
+  @Transactional
+  @InterfaceLog
+  public boolean exists(Long id) {
+    log.trace("exists: {}", id);
+    return userRepository.existsById(id);
+  }
+
+  @Transactional
+  @InterfaceLog
+  // If the entity is not found in the persistence store it is silently ignored.
+  public void delete(Long id) {
+    log.trace("delete: {}", id);
+    userRepository.deleteById(id);
+  }
+
+  @Transactional
+  @InterfaceLog
+  public long count() {
+    return userRepository.count();
+  }
 }

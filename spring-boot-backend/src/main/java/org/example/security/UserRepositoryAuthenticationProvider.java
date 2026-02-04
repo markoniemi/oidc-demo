@@ -3,8 +3,7 @@ package org.example.security;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.annotation.Resource;
-
+import lombok.RequiredArgsConstructor;
 import org.example.model.user.User;
 import org.example.service.user.UserService;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -18,12 +17,9 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Component
+@RequiredArgsConstructor
 public class UserRepositoryAuthenticationProvider implements AuthenticationProvider {
-  private UserService userService;
-
-  public UserRepositoryAuthenticationProvider(UserService userService) {
-    this.userService = userService;
-  }
+  private final UserService userService;
 
   /** Authenticate using UserRepository. */
   @Override
@@ -35,7 +31,7 @@ public class UserRepositoryAuthenticationProvider implements AuthenticationProvi
 
   private Authentication authenticateUser(User user, Authentication authentication) {
     if (user != null && authentication.getCredentials().equals(user.getPassword())) {
-      List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+      List<GrantedAuthority> authorities = new ArrayList<>();
       authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
       return new UsernamePasswordAuthenticationToken(
           authentication.getName(), authentication.getCredentials(), authorities);
@@ -46,7 +42,7 @@ public class UserRepositoryAuthenticationProvider implements AuthenticationProvi
   }
 
   @Override
-  public boolean supports(Class<? extends Object> authentication) {
+  public boolean supports(Class<?> authentication) {
     return authentication.equals(UsernamePasswordAuthenticationToken.class);
   }
 }
