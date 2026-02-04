@@ -30,8 +30,6 @@ import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class WebSecurityConfig {
-  @Resource UserRepositoryAuthenticationProvider userRepositoryAuthenticationProvider;
-  @Resource UserDetailsService userDetailsService;
   AuthenticationManager authenticationManager;
   String[] ignoredPaths = {
     "/*", "/login", "/api/rest/auth/**", "/h2-console/**", "/users/**", "/assets/**","/", "/index.html", "/static/**", "/*.js", "/*.css", "/*.ico"
