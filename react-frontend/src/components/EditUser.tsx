@@ -99,7 +99,7 @@ export default function EditUser() {
                     </InputField>
                     <Row>
                         <Col sm={5}>
-                            <Button type="submit" id="saveUser" size="sm" className="pull-right" disabled={saveMutation.isLoading}>
+                            <Button type="submit" id="saveUser" size="sm" className="pull-right" disabled={saveMutation.isPending}>
                                 <FontAwesomeIcon icon={Icons.faCheckSquare}/>
                             </Button>
                             <Button id="cancel" size="sm" className="pull-right" onClick={onCancel}>
@@ -107,7 +107,7 @@ export default function EditUser() {
                             </Button>
                         </Col>
                     </Row>
-                    {saveMutation.isLoading && <div>Saving...</div>}
+                    {saveMutation.isPending && <div>Saving...</div>}
                 </Form.Group>
             </FormikForm>
         );

@@ -14,8 +14,8 @@ This document provides guidance for GitHub Copilot to assist in the development 
 *   **Style Guide**: Follow the [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html).
 *   **Formatting**: Use Google Java Format for consistent code formatting.
 *   **Naming**: Use clear and descriptive names for classes, methods, and variables (e.g., `FormService`, `getFormById`).
-*   **Comments**: Do not add Javadoc comments.
-*   **Immutability**: Prefer immutability where possible, especially for DTOs and configuration properties.
+*   **Comments**: Use javadoc sparingly, only for external IDE and for complex structures or unusual implementations.
+*   **Immutability**: Prefer immutability where possible, especially for DTOs and configuration properties. Use @Value annotation where possible.
 * Use lombok whenever possible.
 
 ### TypeScript/React (Frontend)
@@ -101,7 +101,7 @@ When working on backend tasks, focus on:
     *   Unit and integration testing with JUnit 5 and Mockito
 *   **Key Priorities:**
     1.  Ensure data integrity and proper validation using Bean Validation annotations (`@NotNull`, `@Size`, `@Valid`)
-    2.  Implement proper exception handling with `@ControllerAdvice` and custom exceptions
+    2.  Implement proper exception handling with `@ControllerAdvice` or `@RestControllerAdvice` and custom exceptions
     3.  Use DTOs for API request/response objects, never expose entities directly
     4.  Use mapstruct for entity-DTO mapping
     5.  Include comprehensive logging with SLF4J
