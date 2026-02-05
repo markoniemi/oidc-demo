@@ -12,13 +12,14 @@ import {Form as FormikForm, Formik, type FormikProps} from "formik";
 import * as Yup from "yup";
 import {InputField} from "./InputField.tsx";
 import { type NavigateFunction, useNavigate, useParams } from "react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function EditUser() {
     const userService: UserService = new UserServiceImpl();
     const [messages, setMessages] = React.useState<ReadonlyArray<Message>>();
     const navigate: NavigateFunction = useNavigate();
     const params = useParams();
+    const queryClient = useQueryClient();
 
     const fetchUser = async (): Promise<User> => {
       const id = Number(params.id);
@@ -29,10 +30,30 @@ export default function EditUser() {
     };
 
     const { data: user, error } = useQuery({
-      queryKey: ["user"],
+      queryKey: ["user", params.id],
       queryFn: fetchUser,
       retry: false,
       initialData: { username: "", password: "", email: "", role: undefined },
+    });
+
+    // useMutation for create/update
+    const saveMutation = useMutation({
+      mutationFn: async (user: User) => {
+        if (user.id == undefined) {
+          return await userService.create(user);
+        } else {
+          return await userService.update(user);
+        }
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["users"] });
+        navigate("/users");
+      },
+      onError: (error: unknown) => {
+        if (error instanceof Error) {
+          setMessages([{ text: error.message, type: MessageType.ERROR }]);
+        }
+      },
     });
 
     if (error) {
@@ -47,27 +68,12 @@ export default function EditUser() {
     });
 
     const onSubmit = async (user: User) => {
-        await submitUser(user);
-    }
+        saveMutation.mutate(user);
+    };
 
     const onCancel = async () => {
         navigate("/users");
-    }
-
-    const submitUser = async (user: User): Promise<void> => {
-        try {
-            if (user.id == undefined) {
-                await userService.create(user);
-            } else {
-                await userService.update(user);
-            }
-            navigate("/users");
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                setMessages([{text: error.message, type: MessageType.ERROR}]);
-            }
-        }
-    }
+    };
 
     const renderForm = (form: FormikProps<User>): React.ReactNode => {
         return (
@@ -93,7 +99,7 @@ export default function EditUser() {
                     </InputField>
                     <Row>
                         <Col sm={5}>
-                            <Button type="submit" id="saveUser" size="sm" className="pull-right">
+                            <Button type="submit" id="saveUser" size="sm" className="pull-right" disabled={saveMutation.isLoading}>
                                 <FontAwesomeIcon icon={Icons.faCheckSquare}/>
                             </Button>
                             <Button id="cancel" size="sm" className="pull-right" onClick={onCancel}>
@@ -101,10 +107,11 @@ export default function EditUser() {
                             </Button>
                         </Col>
                     </Row>
+                    {saveMutation.isLoading && <div>Saving...</div>}
                 </Form.Group>
             </FormikForm>
         );
-    }
+    };
 
     return (
         <Card id="EditUser">

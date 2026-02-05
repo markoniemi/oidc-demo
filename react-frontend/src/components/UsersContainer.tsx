@@ -13,7 +13,7 @@ import Time from "./Time";
 import { type AuthContextProps, useAuth } from "react-oidc-context";
 import { type NavigateFunction, useNavigate } from "react-router";
 import type LoginService from "../api/LoginService.ts";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { type JSX } from "react";
 
 export default function UsersContainer(): JSX.Element {
@@ -21,23 +21,29 @@ export default function UsersContainer(): JSX.Element {
   const userService: UserService = new UserServiceImpl();
   const auth: AuthContextProps = useAuth();
   const navigate: NavigateFunction = useNavigate();
-  const { data: users, error } = useQuery({ queryKey: ["users"], queryFn: () => userService.findAll(), retry: false });
+  const queryClient = useQueryClient();
+  const { data: users, error, isLoading } = useQuery({ queryKey: ["users"], queryFn: () => userService.findAll(), retry: false });
   let messages: ReadonlyArray<Message> = [];
 
   const addUser = (): void => {
     navigate("/users/new");
   };
 
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => userService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+    onError: (error: unknown) => {
+      if (error instanceof Error) {
+        messages = [{ text: error.message, type: MessageType.ERROR }];
+      }
+    },
+  });
+
   const deleteUser = async (id: number): Promise<void> => {
     if (window.confirm("Do you want to delete this item")) {
-      try {
-        await userService.delete(id);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          messages=[{ text: error.message, type: MessageType.ERROR }];
-        }
-      }
-      await userService.findAll();
+      deleteMutation.mutate(id);
     }
   };
 
@@ -62,20 +68,24 @@ export default function UsersContainer(): JSX.Element {
           <FormattedMessage id="users" />
         </Card.Title>
         <Messages messages={messages} />
-        <Table>
-          <thead>
-            <tr>
-              <th>
-                <FormattedMessage id="username" />
-              </th>
-              <th>
-                <FormattedMessage id="email" />
-              </th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>{userItems}</tbody>
-        </Table>
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <Table>
+            <thead>
+              <tr>
+                <th>
+                  <FormattedMessage id="username" />
+                </th>
+                <th>
+                  <FormattedMessage id="email" />
+                </th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>{userItems}</tbody>
+          </Table>
+        )}
         <Button id="addUser" variant="primary" onClick={addUser}>
           <FontAwesomeIcon icon={Icons.faPlus} />
         </Button>
