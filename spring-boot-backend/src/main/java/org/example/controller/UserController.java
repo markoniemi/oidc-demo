@@ -1,7 +1,6 @@
 package org.example.controller;
 
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.UserDto;
@@ -11,16 +10,10 @@ import org.example.model.user.User;
 import org.example.service.user.UserSearchForm;
 import org.example.service.user.UserService;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -33,6 +26,7 @@ public class UserController {
 
   @GetMapping({"", "/"})
   @InterfaceLog
+  @PreAuthorize("isAuthenticated()")
   public List<UserDto> search(@ModelAttribute UserSearchForm searchForm) {
     log.debug("search: {}", searchForm);
     List<User> users;
@@ -46,6 +40,7 @@ public class UserController {
 
   @PostMapping
   @InterfaceLog
+  @PreAuthorize("isAuthenticated()")
   public UserDto create(@Valid @RequestBody UserDto userDto) {
     log.debug("create: {}", userDto);
     User user = userMapper.toEntity(userDto);
@@ -54,6 +49,7 @@ public class UserController {
 
   @PutMapping("/{id}")
   @InterfaceLog
+  @PreAuthorize("isAuthenticated()")
   public UserDto update(@PathVariable Long id, @Valid @RequestBody UserDto userDto) {
     log.debug("update: {}, id: {}", userDto, id);
     userDto.setId(id);
@@ -63,6 +59,7 @@ public class UserController {
 
   @GetMapping("/{id}")
   @InterfaceLog
+  @PreAuthorize("isAuthenticated()")
   public UserDto findById(@PathVariable Long id) {
     log.debug("findById: {}", id);
     return userMapper.toDto(userService.findById(id));
@@ -70,6 +67,7 @@ public class UserController {
 
   @GetMapping("/username/{username}")
   @InterfaceLog
+  @PreAuthorize("isAuthenticated()")
   public UserDto findByUsername(@PathVariable String username) {
     log.debug("findByUsername: {}", username);
     return userMapper.toDto(userService.findByUsername(username));
@@ -77,6 +75,7 @@ public class UserController {
 
   @GetMapping("/exists/{id}")
   @InterfaceLog
+  @PreAuthorize("isAuthenticated()")
   public boolean exists(@PathVariable Long id) {
     log.debug("exists: {}", id);
     return userService.exists(id);
@@ -85,6 +84,7 @@ public class UserController {
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   @InterfaceLog
+  @PreAuthorize("isAuthenticated()")
   public void delete(@PathVariable Long id) {
     log.debug("delete: {}", id);
     userService.delete(id);
@@ -92,6 +92,7 @@ public class UserController {
 
   @GetMapping("/count")
   @InterfaceLog
+  @PreAuthorize("isAuthenticated()")
   public long count() {
     log.debug("count");
     return userService.count();
