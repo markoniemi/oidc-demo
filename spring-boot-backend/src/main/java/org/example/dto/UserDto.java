@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.ToString;
 import org.example.model.user.Role;
 
 @Data
@@ -14,7 +15,7 @@ public class UserDto {
   @NotBlank(message = "field.required")
   private String username;
 
-  private String password;
+  @ToString.Exclude private String password;
 
   @NotBlank(message = "field.required")
   private String email;

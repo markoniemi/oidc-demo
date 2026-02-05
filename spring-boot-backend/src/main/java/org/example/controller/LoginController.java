@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import javax.naming.AuthenticationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.example.dto.LoginDto;
+import org.example.dto.LoginForm;
 import org.example.log.InterfaceLog;
 import org.example.security.JwtToken;
 import org.example.service.user.LoginService;
@@ -23,9 +23,8 @@ public class LoginController {
 
   @PostMapping("/login")
   @InterfaceLog
-  public String login(@RequestBody LoginDto loginDto) throws AuthenticationException {
-    log.debug("Login attempt for user: {}", loginDto.getUsername());
-    return loginService.login(loginDto);
+  public String login(@RequestBody LoginForm loginForm) throws AuthenticationException {
+    return loginService.login(loginForm);
   }
 
   @PostMapping("/logout")

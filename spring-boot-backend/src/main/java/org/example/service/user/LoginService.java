@@ -4,7 +4,7 @@ import javax.naming.AuthenticationException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.example.dto.LoginDto;
+import org.example.dto.LoginForm;
 import org.example.model.user.User;
 import org.example.security.JwtToken;
 import org.springframework.stereotype.Service;
@@ -15,12 +15,12 @@ import org.springframework.stereotype.Service;
 public class LoginService {
   private final UserService userService;
 
-  public String login(LoginDto loginDto) throws AuthenticationException {
-    User user = userService.findByUsername(loginDto.getUsername());
+  public String login(LoginForm loginForm) throws AuthenticationException {
+    User user = userService.findByUsername(loginForm.getUsername());
     if (user == null) {
       throw new AuthenticationException("Login error");
     }
-    if (user.getPassword().equals(loginDto.getPassword())) {
+    if (user.getPassword().equals(loginForm.getPassword())) {
       log.debug("Username: {} logged in.", user.getUsername());
       return JwtToken.create(user.getUsername());
     } else {
