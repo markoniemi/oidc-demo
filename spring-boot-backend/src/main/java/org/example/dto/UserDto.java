@@ -1,18 +1,24 @@
 package org.example.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import org.example.model.user.Role;
 
-@Getter
-@Builder(toBuilder = true)
+@Data
 @AllArgsConstructor
-@JsonDeserialize(builder = UserDto.UserDtoBuilder.class)
 public class UserDto {
-  private final Long id;
-  private final String username;
-  private final String email;
-  private final Role role;
+  private Long id;
+
+  @NotBlank(message = "field.required")
+  private String username;
+
+  private String password;
+
+  @NotBlank(message = "field.required")
+  private String email;
+
+  @NotNull(message = "field.required")
+  private Role role;
 }

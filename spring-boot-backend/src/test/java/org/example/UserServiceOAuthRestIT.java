@@ -8,8 +8,8 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import java.util.Arrays;
 import java.util.List;
 import lombok.extern.log4j.Log4j2;
+import org.example.dto.UserDto;
 import org.example.model.user.Role;
-import org.example.model.user.User;
 import org.example.service.user.UserRestClient;
 import org.example.service.user.ValidationError;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +22,7 @@ public class UserServiceOAuthRestIT extends AbstractIntegrationTestBase {
   private final OAuthTokenHelper oAuthTokenHelper;
 
   @Autowired
-  public UserServiceOAuthRestIT( OAuthTokenHelper oAuthTokenHelper) {
+  public UserServiceOAuthRestIT(OAuthTokenHelper oAuthTokenHelper) {
     this.oAuthTokenHelper = oAuthTokenHelper;
   }
 
@@ -32,15 +32,15 @@ public class UserServiceOAuthRestIT extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void findAll()  {
-    List<User> users = userRestClient.findAll();
+  public void findAll() {
+    List<UserDto> users = userRestClient.findAll();
     assertNotNull(users);
     assertEquals(6, users.size());
   }
 
   @Test
-  public void find()  {
-    List<User> users = userRestClient.findAll();
+  public void find() {
+    List<UserDto> users = userRestClient.findAll();
     assertNotNull(users);
     log.info(Arrays.toString(users.toArray()));
     assertEquals(6, users.size());
@@ -56,8 +56,8 @@ public class UserServiceOAuthRestIT extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void create()  {
-    User user = new User("username", "password", "email", Role.ROLE_USER);
+  public void create() {
+    UserDto user = new UserDto(null, "username", "password", "email", Role.ROLE_USER);
     user = userRestClient.create(user);
     assertNotNull(user);
     assertNotNull(user.getId());
@@ -68,40 +68,41 @@ public class UserServiceOAuthRestIT extends AbstractIntegrationTestBase {
   }
 
   @Test
-  public void createWithInvalidUser()  {
+  public void createWithInvalidUser() {
     String userJson = "{\"username\":null}";
     List<ValidationError> validationErrors = userRestClient.create(userJson, BAD_REQUEST);
     assertEquals(3, validationErrors.size());
     ValidationError validationError = validationErrors.get(0);
     log.debug(validationError);
-    assertEquals("User", validationError.getObjectName());
+    assertEquals("userDto", validationError.getObjectName());
     //    assertEquals("password", validationError.getField());
-    assertEquals("field.required", validationError.getCode());
+    assertEquals("field.required", validationError.getDefaultMessage());
   }
 
   @Test
   public void createWithExistingUser() {
-    User user = new User("username", "password", "email", Role.ROLE_USER);
+    UserDto user = new UserDto(null, "username", "password", "email", Role.ROLE_USER);
     user = userRestClient.create(user);
-    String userJson = "{\"username\":\"username\"}";
+    String userJson =
+        "{\"username\":\"username\", \"password\":\"password\",\"email\":\"email\",\"role\":\"ROLE_USER\"}";
     userRestClient.create(userJson, BAD_REQUEST);
     userRestClient.delete(user.getId(), NO_CONTENT);
   }
 
   @Test
-  public void updateWithInvalidUser()  {
+  public void updateWithInvalidUser() {
     String userJson = "{\"id\":1, \"username\":null}";
     List<ValidationError> validationErrors = userRestClient.update(userJson, 1, BAD_REQUEST);
     log.debug(Arrays.toString(validationErrors.toArray()));
     assertEquals(3, validationErrors.size());
     ValidationError validationError = validationErrors.get(0);
-    assertEquals("User", validationError.getObjectName());
-    //    assertEquals("password", validationError.getField());
-    assertEquals("field.required", validationError.getCode());
+    assertEquals("userDto", validationError.getObjectName());
+    //    assertEquals("username", validationError.getField());
+    assertEquals("field.required", validationError.getDefaultMessage());
   }
 
   @Test
-  public void updateWithNonexistingUser()  {
+  public void updateWithNonexistingUser() {
     String userJson = "{\"id\":555, \"username\":\"username\"}";
     userRestClient.update(userJson, 555, BAD_REQUEST);
   }

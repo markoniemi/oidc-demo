@@ -46,15 +46,18 @@ public class UserController {
 
   @PostMapping
   @InterfaceLog
-  public UserDto create(@Valid @RequestBody User user) {
-    log.debug("create: {}", user);
+  public UserDto create(@Valid @RequestBody UserDto userDto) {
+    log.debug("create: {}", userDto);
+    User user = userMapper.toEntity(userDto);
     return userMapper.toDto(userService.create(user));
   }
 
   @PutMapping("/{id}")
   @InterfaceLog
-  public UserDto update(@PathVariable Long id, @Valid @RequestBody User user) {
-    log.debug("update: {}, id: {}", user, id);
+  public UserDto update(@PathVariable Long id, @Valid @RequestBody UserDto userDto) {
+    log.debug("update: {}, id: {}", userDto, id);
+    userDto.setId(id);
+    User user = userMapper.toEntity(userDto);
     return userMapper.toDto(userService.update(user));
   }
 
