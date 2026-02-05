@@ -1,21 +1,21 @@
 package org.example.service.user;
 
+import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Valid;
 import java.util.List;
 
-import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.Validate;
 import org.example.model.user.User;
 import org.example.repository.user.UserRepository;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolationException;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.validation.annotation.Validated;
 
 @Primary
-@Log4j2
+@Slf4j
 @Service(value = "userService")
 @Validated
 public class UserService {

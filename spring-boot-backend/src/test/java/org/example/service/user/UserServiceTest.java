@@ -1,8 +1,6 @@
 package org.example.service.user;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import java.util.List;
+import jakarta.validation.ConstraintViolationException;
 import org.example.config.TestConfig;
 import org.example.config.TestDatabaseConfig;
 import org.example.model.user.Role;
@@ -20,7 +18,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.validation.ConstraintViolationException;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Import({ValidationAutoConfiguration.class, TestConfig.class, TestDatabaseConfig.class})
 @ExtendWith(SpringExtension.class)

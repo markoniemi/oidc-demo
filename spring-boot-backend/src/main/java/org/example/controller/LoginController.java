@@ -3,7 +3,7 @@ package org.example.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import javax.naming.AuthenticationException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.example.dto.LoginForm;
 import org.example.log.InterfaceLog;
 import org.example.security.JwtToken;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Log4j2
+@Slf4j
 @RestController
 @RequestMapping("/api/rest/auth")
 @RequiredArgsConstructor

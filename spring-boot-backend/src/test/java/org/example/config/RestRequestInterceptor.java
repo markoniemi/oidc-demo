@@ -1,14 +1,12 @@
 package org.example.config;
 
 import java.io.IOException;
-
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
-
-import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class RestRequestInterceptor implements ClientHttpRequestInterceptor {

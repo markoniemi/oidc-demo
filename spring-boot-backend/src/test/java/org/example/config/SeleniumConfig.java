@@ -1,14 +1,12 @@
 package org.example.config;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import java.time.Duration;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-
-import io.github.bonigarcia.wdm.WebDriverManager;
 
 @ComponentScan(basePackages = "org.selenium")
 public class SeleniumConfig {

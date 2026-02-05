@@ -1,13 +1,6 @@
 package org.example;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
-
-import java.util.Arrays;
-import java.util.List;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.example.dto.UserDto;
 import org.example.model.user.Role;
 import org.example.security.JwtToken;
@@ -15,7 +8,15 @@ import org.example.service.user.UserRestClient;
 import org.example.service.user.ValidationError;
 import org.junit.jupiter.api.Test;
 
-@Log4j2
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+
+@Slf4j
 public class UserServiceRestIT extends AbstractIntegrationTestBase {
   private final UserRestClient userService = new UserRestClient(JwtToken.create("admin"));
 
@@ -61,7 +62,6 @@ public class UserServiceRestIT extends AbstractIntegrationTestBase {
     List<ValidationError> validationErrors = userService.create(userJson, BAD_REQUEST);
     assertEquals(3, validationErrors.size());
     ValidationError validationError = validationErrors.get(0);
-    log.debug(validationError);
     assertEquals("userDto", validationError.getObjectName());
 //    assertEquals("password", validationError.getField());
     assertEquals("field.required", validationError.getDefaultMessage());

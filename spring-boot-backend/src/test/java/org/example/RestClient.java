@@ -1,15 +1,14 @@
 package org.example;
 
-import static io.restassured.RestAssured.given;
-import static org.springframework.http.HttpStatus.OK;
-
-import java.util.Arrays;
-
-import org.springframework.http.HttpStatus;
-
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
+import org.springframework.http.HttpStatus;
+
+import java.util.Arrays;
+
+import static io.restassured.RestAssured.given;
+import static org.springframework.http.HttpStatus.OK;
 
 public class RestClient {
   public static <T> T get(String url, TypeRef<T> typeRef, String token) {

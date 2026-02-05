@@ -1,9 +1,7 @@
 package org.example.security;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.model.user.User;
 import org.example.service.user.UserService;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -13,9 +11,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import lombok.extern.log4j.Log4j2;
+import java.util.ArrayList;
+import java.util.List;
 
-@Log4j2
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class UserRepositoryAuthenticationProvider implements AuthenticationProvider {

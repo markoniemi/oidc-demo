@@ -1,13 +1,6 @@
 package org.example;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
-
-import java.util.Arrays;
-import java.util.List;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.example.dto.UserDto;
 import org.example.model.user.Role;
 import org.example.service.user.UserRestClient;
@@ -16,7 +9,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Log4j2
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+
+@Slf4j
 public class UserServiceOAuthRestIT extends AbstractIntegrationTestBase {
   private UserRestClient userRestClient;
   private final OAuthTokenHelper oAuthTokenHelper;
@@ -73,7 +74,6 @@ public class UserServiceOAuthRestIT extends AbstractIntegrationTestBase {
     List<ValidationError> validationErrors = userRestClient.create(userJson, BAD_REQUEST);
     assertEquals(3, validationErrors.size());
     ValidationError validationError = validationErrors.get(0);
-    log.debug(validationError);
     assertEquals("userDto", validationError.getObjectName());
     //    assertEquals("password", validationError.getField());
     assertEquals("field.required", validationError.getDefaultMessage());

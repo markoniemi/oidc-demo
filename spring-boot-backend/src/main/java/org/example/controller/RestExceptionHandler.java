@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.naming.AuthenticationException;
-import lombok.extern.log4j.Log4j2;
+
+import lombok.extern.slf4j.Slf4j;
 import org.example.service.user.ValidationError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@Log4j2
+@Slf4j
 @RestControllerAdvice
 public class RestExceptionHandler {
 

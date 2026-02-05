@@ -1,11 +1,9 @@
 package org.example.config;
 
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.security.JwtAuthenticationFilter;
 import org.example.security.JwtAuthorizationFilter;
 import org.example.security.JwtToken;
-import org.example.security.UserRepositoryAuthenticationProvider;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

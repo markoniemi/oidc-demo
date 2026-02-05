@@ -1,12 +1,13 @@
 package org.example.selenium;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import lombok.extern.log4j.Log4j2;
 
-@Log4j2
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@Slf4j
 public class UsersPage extends AbstractPage {
   public UsersPage(WebDriver webDriver) {
     super(webDriver);

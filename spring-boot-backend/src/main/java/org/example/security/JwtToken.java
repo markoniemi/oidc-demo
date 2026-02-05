@@ -2,13 +2,11 @@ package org.example.security;
 
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 
-import java.util.Date;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import java.util.Date;
+import org.apache.commons.lang3.StringUtils;
 
 /** Utility class for handling JWT tokens. */
 public class JwtToken {
