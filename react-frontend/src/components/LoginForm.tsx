@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as Icons from "@fortawesome/free-solid-svg-icons";
 import Jwt from "../api/Jwt";
 import Message, { MessageType } from "../domain/Message";
-import { Form as FormikForm, Formik, type FormikProps } from "formik";
+import { Form as FormikForm, Formik } from "formik";
 import * as Yup from "yup";
 import { InputField } from "./InputField";
 import { useAuth, type AuthContextProps } from "react-oidc-context";
@@ -29,12 +29,12 @@ export default function LoginForm() {
     const auth: AuthContextProps = useAuth();
     const navigate: NavigateFunction = useNavigate();
 
-    const renderForm = (form: FormikProps<ILoginForm>): React.ReactNode => {
+    const renderForm = (): React.ReactNode => {
         return (
             <FormikForm>
                 <Form.Group>
-                    <InputField name="username" formik={form} />
-                    <InputField name="password" type="password" formik={form} />
+                    <InputField name="username" />
+                    <InputField name="password" type="password" />
                     <Col sm={5}>
                         <Button id="login" size="sm" className="pull-right" type="submit">
                             <FontAwesomeIcon icon={Icons.faCheckSquare} />

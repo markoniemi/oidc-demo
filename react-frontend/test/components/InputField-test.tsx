@@ -10,6 +10,7 @@ import {Formik} from "formik";
 import * as Yup from "yup";
 import {ObjectSchema} from "yup";
 import {assert, beforeEach, describe, test, vi} from "vitest";
+import userEvent from "@testing-library/user-event";
 
 describe("InputField component", () => {
     beforeEach(() => {
@@ -31,9 +32,10 @@ describe("InputField component", () => {
         });
         await renderInputField(user1, schema, onSubmit);
         const input = (await screen.findByTestId("username")) as HTMLInputElement;
-        await setValue(input, "");
+        await userEvent.clear(input);
+        fireEvent.blur(input);
         assert.isTrue(((await screen.findByTestId("username")) as HTMLInputElement).classList.contains("is-invalid"));
-        await setValue(input, "text");
+        await userEvent.type(input, "text");
         assert.isFalse(((await screen.findByTestId("username")) as HTMLInputElement).classList.contains("is-invalid"));
     });
 });
@@ -52,10 +54,4 @@ async function renderInputField(user: User, schema: ObjectSchema<any>, onSubmit:
 
 function renderForm(): React.ReactNode {
     return <InputField name="username"/>;
-}
-
-async function setValue(input: HTMLInputElement, value?: string) {
-    await act(async () => {
-        fireEvent.change(input, {target: {value: value}});
-    });
 }
